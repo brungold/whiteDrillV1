@@ -53,4 +53,7 @@ class Appointment extends BaseEntity {
     @JoinColumn(name = "idPatient", referencedColumnName = "id")
     private Patient patient;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "schedule_id", referencedColumnName = "id")
+    private Schedule schedule; // Nowa relacja z grafikiem
 }
