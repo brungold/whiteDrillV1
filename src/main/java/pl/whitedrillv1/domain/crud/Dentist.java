@@ -21,7 +21,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter(AccessLevel.PACKAGE)
 @Setter(AccessLevel.PACKAGE)
-public class Dentist extends BaseEntity {
+class Dentist extends BaseEntity {
 
     @Id
     @GeneratedValue(generator = "dentist_id_seq", strategy = GenerationType.SEQUENCE)

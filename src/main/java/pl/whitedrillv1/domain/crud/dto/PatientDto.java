@@ -6,9 +6,9 @@ import jakarta.validation.constraints.Pattern;
 
 @Builder
 public record PatientDto(
+        Long id,
         String firstName,
         String lastName,
-        String fullName,
         String gender,
         LocalDate birthDate,
         @Pattern(

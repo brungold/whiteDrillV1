@@ -55,7 +55,7 @@ class Patient extends BaseEntity{
     private String nationality;
 
     @Enumerated(EnumType.STRING)
-    private Gender gender;
+    private PatientGender patientGender;
 
     private LocalDate birthDate;
 
@@ -75,13 +75,13 @@ class Patient extends BaseEntity{
     @OneToMany(mappedBy = "patient", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Set<Appointment> appointments = new HashSet<>();
 
-    public Patient(String firstName, String lastName, String maidenName, String language, String nationality, Gender gender, LocalDate birthDate, String pesel, String nip, String phone, String email, Address address) {
+    public Patient(String firstName, String lastName, String maidenName, String language, String nationality, PatientGender patientGender, LocalDate birthDate, String pesel, String nip, String phone, String email, Address address) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.maidenName = maidenName;
         this.language = language;
         this.nationality = nationality;
-        this.gender = gender;
+        this.patientGender = patientGender;
         this.birthDate = birthDate;
         this.pesel = pesel;
         this.nip = nip;
