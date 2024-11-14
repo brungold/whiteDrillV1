@@ -32,6 +32,7 @@ class Schedule extends BaseEntity {
             allocationSize = 1
 
     )
+    private Long id;
 
     @Column(nullable = false)
     private LocalDate date; // Konkretny dzień, np. 2024-10-20

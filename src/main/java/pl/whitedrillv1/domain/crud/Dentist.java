@@ -31,6 +31,7 @@ public class Dentist extends BaseEntity {
             allocationSize = 1
 
     )
+    private Long id;
 
     @Column(nullable = false)
     private String firstName;
