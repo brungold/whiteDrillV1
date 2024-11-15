@@ -3,6 +3,8 @@ package pl.whitedrillv1.domain.crud;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 class InMemoryPatientRepository implements PatientRepository {
@@ -11,8 +13,9 @@ class InMemoryPatientRepository implements PatientRepository {
     AtomicInteger index = new AtomicInteger(0);
 
     @Override
-    public Patient findById(long id) {
-        return null;
+    public Optional<Patient> findById(final long id) {
+        Patient patient = db.get(id);
+        return Optional.ofNullable(patient);
     }
 
     @Override
@@ -24,7 +27,7 @@ class InMemoryPatientRepository implements PatientRepository {
     }
 
     @Override
-    public List<Patient> findAll() {
-        return List.of();
+    public Set<Patient> findAll() {
+        return Set.of();
     }
 }

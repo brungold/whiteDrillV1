@@ -50,22 +50,6 @@ class PatientAdder {
         Patient savedPatient = patientRepository.save(patient);
 
         // Konwersja zapisanej encji Patient do PatientDto
-        return PatientDto.builder()
-                .id(savedPatient.getId())
-                .firstName(savedPatient.getFirstName())
-                .lastName(savedPatient.getLastName())
-                .gender(savedPatient.getPatientGender().name())
-                .birthDate(savedPatient.getBirthDate())
-                .pesel(savedPatient.getPesel())
-                .phone(savedPatient.getPhone())
-                .email(savedPatient.getEmail())
-                .address(AddressDto.builder()
-                        .postalCode(savedPatient.getAddress().getPostalCode())
-                        .city(savedPatient.getAddress().getCity())
-                        .street(savedPatient.getAddress().getStreet())
-                        .houseNumber(savedPatient.getAddress().getHouseNumber())
-                        .apartmentNumber(savedPatient.getAddress().getApartmentNumber())
-                        .build())
-                .build();
+        return PatientMapper.mapFromPatientToPatientDto(savedPatient);
     }
 }

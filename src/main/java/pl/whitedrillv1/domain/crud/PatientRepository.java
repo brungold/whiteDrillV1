@@ -1,15 +1,18 @@
 package pl.whitedrillv1.domain.crud;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 
-import java.util.List;
+
+import java.util.Optional;
+import java.util.Set;
 
 interface PatientRepository extends Repository<Patient, Long> {
 
-    Patient findById(long id);
+    @Query("SELECT p FROM Patient p WHERE p.id = :id")
+    Optional<Patient> findById(long id);
 
     Patient save(Patient patient);
 
-    List<Patient> findAll();
-
+    Set<Patient> findAll();
 }
