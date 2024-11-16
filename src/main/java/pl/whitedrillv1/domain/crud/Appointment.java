@@ -49,6 +49,9 @@ class Appointment extends BaseEntity {
     @Lob
     private String treatmentDescription;
 
+    @ManyToOne
+    private Dentist dentist;
+
     @ManyToOne(optional = false) // ????
     @JoinColumn(name = "idPatient", referencedColumnName = "id")
     private Patient patient;

@@ -39,6 +39,9 @@ class Dentist extends BaseEntity {
     @Column(nullable = false)
     private String lastName;
 
+//    @OneToMany(mappedBy = "dentist")
+//    private Set<Appointment> appointments = new HashSet<>();
+
     @OneToMany(mappedBy = "dentist", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Schedule> schedules = new HashSet<>();
 }

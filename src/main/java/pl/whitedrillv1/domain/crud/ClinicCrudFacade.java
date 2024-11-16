@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import pl.whitedrillv1.domain.crud.dto.PatientDto;
 import pl.whitedrillv1.domain.crud.dto.PatientRequestDto;
 
+import java.util.Set;
+
 @Service
 @AllArgsConstructor
 public class ClinicCrudFacade {
@@ -16,7 +18,9 @@ public class ClinicCrudFacade {
         return  patientAdder.addPatient(dto);
     }
 
-
+    public Set<PatientDto> findAllPatients() {
+        return patientRetriever.findAll();
+    }
 
     public PatientDto findPatientDtoById(Long id) {
         return patientRetriever.findPatientDtoById(id);

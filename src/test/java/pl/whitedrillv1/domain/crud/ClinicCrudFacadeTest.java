@@ -8,8 +8,10 @@ import pl.whitedrillv1.domain.crud.dto.PatientGenderDto;
 import pl.whitedrillv1.domain.crud.dto.PatientRequestDto;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -101,9 +103,74 @@ public class ClinicCrudFacadeTest {
     @DisplayName("Should throw exception PatientNotFound When id was: 0")
     public void should_throw_patient_not_found_exception_when_id_was_zero() {
         //given
-        //assertThat(clinicCrudFacade.)
+        assertThat(clinicCrudFacade.findAllPatients()).isEmpty();
         //when
+        Throwable throwable = catchThrowable(() -> clinicCrudFacade.findPatientDtoById(0L));
+        //then
+        assertThat(throwable).isInstanceOf(PatientNotFoundException.class);
+        assertThat(throwable.getMessage()).isEqualTo("Pacjent z podanym id: 0, nie został znaleziony.");
+    }
+
+    @Test
+    @DisplayName("Should retrieve all patients")
+    public void should_retrieve_all_patients() {
+        //given
+        PatientRequestDto patientNo1 = PatientRequestDto.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .birthDate(LocalDate.of(1980, 5, 15))
+                .phone("1234567890")
+                .email("john.doe@example.com")
+                .patientGender(PatientGenderDto.MALE)
+                .pesel("80051512345")
+                .language("English")
+                .nationality("American")
+                .nip("1234567890")
+                .addressDto(AddressDto.builder()
+                        .postalCode(12345)
+                        .city("New York")
+                        .street("Broadway")
+                        .houseNumber(1)
+                        .apartmentNumber(101)
+                        .build())
+                .build();
+
+        PatientRequestDto patientNo2 = PatientRequestDto.builder()
+                .firstName("Daisy")
+                .lastName("Doe")
+                .birthDate(LocalDate.of(1990, 5, 25))
+                .phone("1234567899")
+                .email("john.doe@example.com")
+                .patientGender(PatientGenderDto.FEMALE)
+                .pesel("90052513345")
+                .maidenName("Smith")
+                .language("English")
+                .nationality("American")
+                .nip("1234567890")
+                .addressDto(AddressDto.builder()
+                        .postalCode(12345)
+                        .city("New York")
+                        .street("Broadway")
+                        .houseNumber(1)
+                        .apartmentNumber(101)
+                        .build())
+                .build();
+        clinicCrudFacade.addPatient(patientNo1);
+        clinicCrudFacade.addPatient(patientNo2);
+
+        //when
+        Set<PatientDto> result = clinicCrudFacade.findAllPatients();
 
         //then
+        assertThat(result)
+                .isNotNull()
+                .hasSize(2)
+                .extracting(PatientDto::firstName)
+                .containsExactlyInAnyOrder("John", "Daisy");
+
+        assertThat(result)
+                .extracting(PatientDto::lastName)
+                .containsExactlyInAnyOrder("Doe", "Doe");
+
     }
 }

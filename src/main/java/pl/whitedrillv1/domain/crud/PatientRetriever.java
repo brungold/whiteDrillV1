@@ -28,12 +28,12 @@ class PatientRetriever {
 
     Patient findPatientById(Long id) {
         return patientRepository.findById(id)
-                .orElseThrow(() -> new PatientNotFoundException("Pacjent z podanym id " + id + " nie został znaleziony."));
+                .orElseThrow(() -> new PatientNotFoundException("Pacjent z podanym id: " + id + ", nie został znaleziony."));
     }
 
     PatientDto findPatientDtoById(Long id) {
         return patientRepository.findById(id)
                 .map(PatientMapper::mapFromPatientToPatientDto)
-                .orElseThrow(() -> new PatientNotFoundException("Pacjent z podanym id " + id + " nie został znaleziony."));
+                .orElseThrow(() -> new PatientNotFoundException("Pacjent z podanym id: " + id + ", nie został znaleziony."));
     }
 }
