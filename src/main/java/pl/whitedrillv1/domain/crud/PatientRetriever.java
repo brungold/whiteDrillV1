@@ -4,10 +4,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
-import pl.whitedrillv1.domain.crud.dto.AddressDto;
 import pl.whitedrillv1.domain.crud.dto.PatientDto;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 

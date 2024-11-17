@@ -12,8 +12,6 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ClinicCrudFacadeTest {
 
@@ -21,6 +19,7 @@ public class ClinicCrudFacadeTest {
             new InMemoryPatientRepository()
     );
 
+    // TC for ClinicCrudFacade -> addPatient
     @Test
     @DisplayName("Should add patient john test with id: 0 when john was sent")
     public void should_add_patient_john_test_with_id_zero_when_john_was_sent() {
@@ -60,6 +59,7 @@ public class ClinicCrudFacadeTest {
         assertThat(result.address().city()).isEqualTo("New York");
     }
 
+    // TC for ClinicCrudFacade -> findPatientDtoById
     @Test
     @DisplayName("Should retrieve patient by id")
     public void should_retrieve_patient_by_id() {
@@ -99,6 +99,7 @@ public class ClinicCrudFacadeTest {
         assertThat(patientDtoById.address().city()).isEqualTo("New York");
     }
 
+    // TC for ClinicCrudFacade -> PatientNotFoundException
     @Test
     @DisplayName("Should throw exception PatientNotFound When id was: 0")
     public void should_throw_patient_not_found_exception_when_id_was_zero() {
@@ -111,6 +112,7 @@ public class ClinicCrudFacadeTest {
         assertThat(throwable.getMessage()).isEqualTo("Pacjent z podanym id: 0, nie został znaleziony.");
     }
 
+    // TC for ClinicCrudFacade -> findAllPatients
     @Test
     @DisplayName("Should retrieve all patients")
     public void should_retrieve_all_patients() {

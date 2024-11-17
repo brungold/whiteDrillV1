@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.whitedrillv1.domain.crud.util.BaseEntity;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -42,12 +43,18 @@ class Appointment extends BaseEntity {
     @Column(nullable = false)
     private LocalTime appointmentTime;
 
+    @Column(nullable = false)
+    private int duration; // domyślnie 60 min
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
+
     @Enumerated(EnumType.STRING)
     @Column(length = 10, nullable = false)
     private AppointmentStatus status; // Przykład wartości: 'scheduled', 'completed', 'cancelled'
 
     @Lob
-    private String treatmentDescription;
+    private String appointmentNotes;
 
     @ManyToOne
     private Dentist dentist;

@@ -13,7 +13,9 @@ public class ClinicCrudFacade {
 
     private final PatientAdder patientAdder;
     private final PatientRetriever patientRetriever;
+    public final AppointmentRetriever appointmentRetriever;
 
+    // Patient methods
     public PatientDto addPatient(PatientRequestDto dto) {
         return  patientAdder.addPatient(dto);
     }
@@ -26,5 +28,5 @@ public class ClinicCrudFacade {
         return patientRetriever.findPatientDtoById(id);
     }
 
-
+    // Appointment methods
 }
