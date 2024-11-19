@@ -2,20 +2,18 @@ package pl.whitedrillv1.domain.crud;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 class InMemoryPatientRepository implements PatientRepository {
 
-    Map<Long, Patient> db = new HashMap<Long, Patient>();
+    Map<Long, Patient> db = new HashMap<>();
     AtomicInteger index = new AtomicInteger(0);
 
     @Override
-    public Optional<Patient> findById(final long id) {
+    public Optional<Patient> findById(final Long id) {
         Patient patient = db.get(id);
         return Optional.ofNullable(patient);
     }

@@ -10,7 +10,7 @@ import java.util.Set;
 interface PatientRepository extends Repository<Patient, Long> {
 
     @Query("SELECT p FROM Patient p WHERE p.id = :id")
-    Optional<Patient> findById(long id);
+    Optional<Patient> findById(Long id);
 
     Patient save(Patient patient);
 

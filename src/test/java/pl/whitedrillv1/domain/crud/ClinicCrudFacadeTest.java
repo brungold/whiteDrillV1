@@ -6,8 +6,11 @@ import pl.whitedrillv1.domain.crud.dto.AddressDto;
 import pl.whitedrillv1.domain.crud.dto.PatientDto;
 import pl.whitedrillv1.domain.crud.dto.PatientGenderDto;
 import pl.whitedrillv1.domain.crud.dto.PatientRequestDto;
+import pl.whitedrillv1.domain.crud.dto.ScheduleRequestDto;
+import pl.whitedrillv1.domain.crud.dto.ScheduleResponseDto;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,10 +19,16 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 public class ClinicCrudFacadeTest {
 
     ClinicCrudFacade clinicCrudFacade = ClinicCrudFacadeConfiguration.createClinicCrudFacade(
-            new InMemoryPatientRepository()
+            new InMemoryPatientRepository(),
+            new InMemoryScheduleRepository(),
+            new InMemoryDentistRepository(),
+            new InMemoryAppointmentRepository()
     );
 
-    // TC for ClinicCrudFacade -> addPatient
+    /* ==========================
+    Section: Patient Entity Tests
+    ========================== */
+    // TC for -> addPatient
     @Test
     @DisplayName("Should add patient john test with id: 0 when john was sent")
     public void should_add_patient_john_test_with_id_zero_when_john_was_sent() {
@@ -59,7 +68,7 @@ public class ClinicCrudFacadeTest {
         assertThat(result.address().city()).isEqualTo("New York");
     }
 
-    // TC for ClinicCrudFacade -> findPatientDtoById
+    // TC for -> findPatientDtoById
     @Test
     @DisplayName("Should retrieve patient by id")
     public void should_retrieve_patient_by_id() {
@@ -99,7 +108,7 @@ public class ClinicCrudFacadeTest {
         assertThat(patientDtoById.address().city()).isEqualTo("New York");
     }
 
-    // TC for ClinicCrudFacade -> PatientNotFoundException
+    // TC for -> PatientNotFoundException
     @Test
     @DisplayName("Should throw exception PatientNotFound When id was: 0")
     public void should_throw_patient_not_found_exception_when_id_was_zero() {
@@ -112,7 +121,7 @@ public class ClinicCrudFacadeTest {
         assertThat(throwable.getMessage()).isEqualTo("Pacjent z podanym id: 0, nie został znaleziony.");
     }
 
-    // TC for ClinicCrudFacade -> findAllPatients
+    // TC for findAllPatients
     @Test
     @DisplayName("Should retrieve all patients")
     public void should_retrieve_all_patients() {
@@ -173,6 +182,50 @@ public class ClinicCrudFacadeTest {
         assertThat(result)
                 .extracting(PatientDto::lastName)
                 .containsExactlyInAnyOrder("Doe", "Doe");
+
+    }
+     /* ===============================
+    Section: Schedule Entity Tests
+    =============================== */
+     @Test
+     @DisplayName("Should add schedule")
+     public void should_add_schedule() {
+        //given
+         LocalDate futureDate = LocalDate.of(2025, 5, 20);
+         LocalTime startTime = LocalTime.of(9, 0);
+         LocalTime endTime = LocalTime.of(18, 0);
+         ScheduleRequestDto requestDto = new ScheduleRequestDto(
+                 futureDate,
+                 startTime,
+                 endTime
+         );
+         //when
+         ScheduleResponseDto response = clinicCrudFacade.addSchedule(requestDto);
+         //then
+         assertThat(response.id()).isEqualTo(0L);
+         assertThat(response.date()).isEqualTo(futureDate);
+         assertThat(response.date()).isEqualTo(LocalDate.of(2025, 5, 20));
+         assertThat(response.startTime()).isEqualTo(startTime);
+         assertThat(response.startTime()).isEqualTo(LocalTime.of(9, 0));
+         assertThat(response.endTime()).isEqualTo(endTime);
+         assertThat(response.endTime()).isEqualTo(LocalTime.of(18, 0));
+         assertThat(response.dentistDto().id()).isEqualTo(1L);
+         assertThat(response.dentistDto().firstName()).isEqualTo("Oskar");
+         assertThat(response.dentistDto().lastName()).isEqualTo("Test");
+     }
+
+    /* ===============================
+    Section: Appointment Entity Tests
+    =============================== */
+    // TC for -> findAppointmentDtoById
+    @Test
+    @DisplayName("Should retrieve appointment by id")
+    public void should_retrieve_appointment_by_id() {
+        //given
+
+        //when
+
+        //then
 
     }
 }
