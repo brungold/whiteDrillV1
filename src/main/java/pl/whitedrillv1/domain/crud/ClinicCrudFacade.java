@@ -49,11 +49,11 @@ public class ClinicCrudFacade {
     }
 
     public ScheduleDto findScheduleDtoByDate(LocalDate date) {
-        return scheduleRetriever.findScheduleByDate(date);
+        return scheduleRetriever.findScheduleDtoByDate(date);
     }
 
     public ScheduleDto findScheduleDtoById(Long id) {
-        return scheduleRetriever.findScheduleById(id);
+        return scheduleRetriever.findScheduleDtoById(id);
     }
 
     // Appointment methods

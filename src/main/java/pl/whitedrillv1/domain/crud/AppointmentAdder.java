@@ -5,15 +5,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.whitedrillv1.domain.crud.dto.AppointmentDto;
 import pl.whitedrillv1.domain.crud.dto.AppointmentRequestDto;
-import pl.whitedrillv1.domain.crud.dto.ScheduleDto;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.IntStream;
 
 @Service
@@ -22,28 +17,18 @@ import java.util.stream.IntStream;
 class AppointmentAdder {
 
     private final AppointmentRepository appointmentRepository;
+    private final AppointmentRetriever appointmentRetriever;
+    private final ScheduleRetriever scheduleRetriever;
     private final PatientRepository patientRepository;
     private final DentistRepository dentistRepository;
-    private final ScheduleRetriever scheduleRetriever;
-    /*
-    addAppointment
-    -> AppointmentRequestDto
-        -> verification if there is a Schedule on that day
-        -> verification if these hours are free
-    -> create new Appoitment
-
-    -> add to bookedHours hours form Request to database
-    -> ScheduleUpdate
-    -> return AppointmentResponseDto(id, data, hours, patient, dentist)
-     */
 
     AppointmentDto addAppointment(AppointmentRequestDto appointmentRequestDto) {
         LocalDate date = appointmentRequestDto.appointmentDate();
         LocalTime startTime = appointmentRequestDto.appointmentTime();
         Integer duration = appointmentRequestDto.duration();
 
-        ScheduleDto scheduleDto = scheduleRetriever.findScheduleByDate(date);
 
+        Schedule schedule = scheduleRetriever.findScheduleByDate(date);
 
         // 2. Wylicz godziny zajmowane przez wizytę
         List<Integer> reservedHours = calculateReservedHours(
@@ -51,7 +36,7 @@ class AppointmentAdder {
                 appointmentRequestDto.duration());
 
         // 3. Sprawdź, czy godziny są dostępne
-        if (!areHoursAvailable(reservedHours, scheduleDto.bookedHours())) {
+        if (!areHoursAvailable(reservedHours, schedule.getBookedHours())) {
             throw new HoursAlreadyBookedException("Proszę sprawdź ponownie czy godziny : " + reservedHours + " nie sa już zarezerwowane.");
         }
 
@@ -75,13 +60,21 @@ class AppointmentAdder {
         // 7. Zapisz wizytę
         appointmentRepository.save(appointment);
 
-        //TODO
+        // 8. Przypisuje wizytę do danego dnia
+        schedule.addAppointment(appointment);
 
-        // 8. dodaj do appointments i hours w schedule czy wyciągać scheduleDto czy schedule ??
-        //        Schedule schedule = scheduleRetriever.findScheduleByDate(date);
+        //TODO
+        //trzeba edytować schedule w bazie i dodać mu appointment
 
         return AppointmentMapper.mapFromAppointmentToAppointmentDto(appointment);
     }
+
+    public void addAppointmentToSchedule(final Long ScheduleId,final Long AppointmentId) {
+        Schedule schedule = scheduleRetriever.findScheduleById(ScheduleId);
+        Appointment appointment = appointmentRetriever.findAppointmentById(AppointmentId);
+        schedule.addAppointment(appointment);
+    }
+
     private List<Integer> calculateReservedHours(LocalTime startTime, Integer duration) {
         int startHour = startTime.getHour(); // wrapping startTime into integer hour
         return IntStream.range(startHour, startHour + duration)
@@ -90,9 +83,7 @@ class AppointmentAdder {
     }
 
     private boolean areHoursAvailable(List<Integer> reservedHours, Set<Integer> bookedHours) {
-        // Sprawdź, czy jakakolwiek godzina z `reservedHours` jest zajęta w `bookedHours`
+        // Sprawdzam jakakolwiek godzina z `reservedHours` jest zajęta w `bookedHours`
         return reservedHours.stream().noneMatch(bookedHours::contains);
     }
-
-
 }

@@ -24,17 +24,29 @@ class ScheduleRetriever {
                 .toList();
     }
 
-    ScheduleDto findScheduleByDate(LocalDate date) {
+    ScheduleDto findScheduleDtoByDate(LocalDate date) {
         return scheduleRepository.findByDate(date)
                 .map(ScheduleMapper::mapFromScheduleToScheduleDto)
                 .orElseThrow(() -> new ScheduleNotFoundException("Grafik na ten dzień: " + date + " jeszcze nie istnieje," +
                         " jeżeli tego dnia odbyć się wizyta musisz utworzyć grafik"));
     }
 
-    ScheduleDto findScheduleById(Long id) {
+    ScheduleDto findScheduleDtoById(Long id) {
         return scheduleRepository.findById(id)
                 .map(ScheduleMapper::mapFromScheduleToScheduleDto)
                 .orElseThrow(() -> new ScheduleNotFoundException("Grafik na ten dzień z Id równe: " + id + " jeszcze nie istnieje," +
+                        " jeżeli tego dnia odbyć się wizyta musisz utworzyć grafik"));
+    }
+
+    Schedule findScheduleById(Long id) {
+        return scheduleRepository.findById(id)
+                .orElseThrow(() -> new ScheduleNotFoundException("Grafik na ten dzień z Id równe: " + id + " jeszcze nie istnieje," +
+                        " jeżeli tego dnia odbyć się wizyta musisz utworzyć grafik"));
+    }
+
+    Schedule findScheduleByDate(LocalDate date) {
+        return scheduleRepository.findByDate(date)
+                .orElseThrow(() -> new ScheduleNotFoundException("Grafik na ten dzień: " + date + " jeszcze nie istnieje," +
                         " jeżeli tego dnia odbyć się wizyta musisz utworzyć grafik"));
     }
 

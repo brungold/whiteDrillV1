@@ -390,6 +390,7 @@ public class ClinicCrudFacadeTest {
         Long AppointmentDtoId = appointmentDto.id();
         //     TC for -> findAppointmentDtoById
         AppointmentDto appointmentDtoById = clinicCrudFacade.findAppointmentDtoById(AppointmentDtoId);
+        ScheduleDto scheduleDtoById = clinicCrudFacade.findScheduleDtoById(AppointmentDtoId);
 
         //then
         assertThat(appointmentDto).isNotNull();
@@ -400,6 +401,16 @@ public class ClinicCrudFacadeTest {
         assertThat(appointmentDtoById.dentistId()).isEqualTo(1L);
         assertThat(appointmentDtoById.patientName()).isEqualTo("John Doe");
         assertThat(appointmentDtoById.duration()).isEqualTo(1);
+
+        assertThat(scheduleDtoById.appointments().size()).isEqualTo(1);
+        assertThat(scheduleDtoById.appointments())
+                .anyMatch(appointment ->
+                        appointment.appointmentDate().equals(LocalDate.of(2025, 5, 20)) &&
+                                appointment.appointmentTime().equals(LocalTime.of(9, 0)) &&
+                                appointment.dentistId().equals(1L) &&
+                                appointment.patientId().equals(patientDto.id()) &&
+                                appointment.patientName().equals("John Doe")
+                );
 
     }
 //     TC for -> findAppointmentDtoById

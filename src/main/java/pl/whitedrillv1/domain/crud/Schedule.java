@@ -19,9 +19,7 @@ import pl.whitedrillv1.domain.crud.util.BaseEntity;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Builder
@@ -63,13 +61,10 @@ class Schedule extends BaseEntity {
     @Column
     private String description;
 
-    void addAppointment(Appointment appointment) {
+    void addAppointment(final Appointment appointment) {
         appointments.add(appointment);
     }
 
-    /**
-     * Usuwa podane godziny z zajętych.
-     */
     public void removeBookedHours(Set<Integer> hours) {
         bookedHours.removeAll(hours); // Usuwa godziny ze zbioru
     }

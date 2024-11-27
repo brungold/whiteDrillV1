@@ -47,4 +47,20 @@ class InMemoryScheduleRepository implements ScheduleRepository {
     public List<Schedule> findAll(final Pageable pageable) {
         return db.values().stream().toList();
     }
+
+    @Override
+    public void addAppointmentToSchedule(Long scheduleId, Long appointmentId) {
+        Schedule schedule = db.get(scheduleId);
+        Appointment appointment = schedule.getAppointments().stream()
+                .filter(a -> a.getId().equals(appointmentId))
+                .findFirst()
+                .orElse(null);
+
+        // Ustaw relację dwukierunkową
+        schedule.addAppointment(appointment);
+        appointment.setSchedule(schedule);
+
+        // Zaktualizuj mapę
+        db.put(scheduleId, schedule);
+    }
 }

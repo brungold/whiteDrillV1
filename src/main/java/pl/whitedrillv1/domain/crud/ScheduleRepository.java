@@ -1,6 +1,7 @@
 package pl.whitedrillv1.domain.crud;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 
@@ -23,4 +24,12 @@ interface ScheduleRepository extends Repository<Schedule, Long> {
 //            JOIN FETCH s.appointments
 //            """)
     List<Schedule> findAll(Pageable pageable);
+
+    @Modifying
+    @Query("""
+            UPDATE Appointment a
+                SET a.schedule.id = :scheduleId
+                WHERE a.id = :appointmentId
+            """)
+    void addAppointmentToSchedule (Long scheduleId, Long appointmentId);
 }
