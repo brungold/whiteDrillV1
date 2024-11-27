@@ -8,6 +8,9 @@ import pl.whitedrillv1.domain.crud.dto.ScheduleRequestDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.HashSet;
+
 import static pl.whitedrillv1.domain.crud.DentistMapper.mapFromDentistToDentistDto;
 
 @Log4j2
@@ -16,15 +19,19 @@ import static pl.whitedrillv1.domain.crud.DentistMapper.mapFromDentistToDentistD
 class ScheduleAdder {
 
     private final DentistAssigner dentistAssigner;
+    private final ScheduleRetriever scheduleRetriever;
     private final ScheduleRepository scheduleRepository;
 
     ScheduleResponseDto addSchedule(final ScheduleRequestDto request) {
-        validateScheduleRequest(request);
+        validateScheduleTimesRequest(request);
+        validateScheduleUniqueness(request.date());
 
         Schedule schedule = Schedule.builder()
                 .date(request.date())
                 .startTime(request.startTime())
                 .endTime(request.endTime())
+                .appointments(new HashSet<>()) // <- Inicjalizacja pustego zbioru
+                .bookedHours(new HashSet<>()) // <- Inicjalizacja pustego zbioru
                 .build();
 
         schedule = dentistAssigner.assignDefaultDentistOskarToSchedule(schedule);
@@ -34,17 +41,21 @@ class ScheduleAdder {
         log.info("Adding new schedule: {}", schedule);
 
         Schedule savedSchedule = scheduleRepository.save(schedule);
-        /*TODO
-        !Zwróć uwagę że dentistDto nie powinien się tutaj brać z czapki, do refactoru!
+        /*
+        !dopóki jest jeden dentysta wydajniej jest go przypisywać!
          */
         return new ScheduleResponseDto(savedSchedule.getId(), savedSchedule.getDate(),
                 savedSchedule.getStartTime(), savedSchedule.getEndTime(),dentistDto); // <- dentostDto, shame
     }
 
 
-    private void validateScheduleRequest(ScheduleRequestDto request) {
+    private void validateScheduleTimesRequest(ScheduleRequestDto request) {
         if (!request.startTime().isBefore(request.endTime())) {
-            throw new IllegalArgumentException("Start time must be before end time");
+            throw new ScheduleInvalidTimeRangeException("Godzina rozpoczęcia dnia pracy, nie może być późniejsza niż godzina końca dnia pracy.");
         }
+    }
+
+    private void validateScheduleUniqueness(LocalDate date) {
+        scheduleRetriever.scheduleExists(date);
     }
 }

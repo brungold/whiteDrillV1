@@ -6,7 +6,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
@@ -18,10 +17,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.whitedrillv1.domain.crud.util.BaseEntity;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Builder
@@ -52,15 +52,37 @@ class Schedule extends BaseEntity {
     private LocalTime endTime; // Godzina zakończenia dostępności, np. 17:00
 
     @ManyToOne(optional = false)
-//    @JoinColumn(name = "dentist_id", referencedColumnName = "id")
     private Dentist dentist; // Umożliwia przypisanie dostępności do konkretnego lekarza
 
     @OneToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Set<Appointment> appointments = new HashSet<>();
 
-//    @Column(nullable = false)
-//    private Duration duration; // np. Duration.ofMinutes(30)
+    //@Column(name = "booked_hours", columnDefinition = "integer[]") // Tablica w PostgreSQL
+    private Set<Integer> bookedHours = new HashSet<>(); // Przechowuje zajęte godziny w formie unikalnych wartości
 
     @Column
     private String description;
+
+    void addAppointment(Appointment appointment) {
+        appointments.add(appointment);
+    }
+
+    /**
+     * Usuwa podane godziny z zajętych.
+     */
+    public void removeBookedHours(Set<Integer> hours) {
+        bookedHours.removeAll(hours); // Usuwa godziny ze zbioru
+    }
+
+    /*
+    CREATE TABLE schedule (
+    id SERIAL PRIMARY KEY,
+    date DATE NOT NULL,
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
+    dentist_id BIGINT NOT NULL,
+    booked_hours INTEGER[], -- Tablica przechowująca godziny
+    description TEXT
+);
+     */
 }

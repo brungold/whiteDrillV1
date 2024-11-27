@@ -1,6 +1,8 @@
 package pl.whitedrillv1.domain.crud;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -12,6 +14,8 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,11 +24,17 @@ import pl.whitedrillv1.domain.crud.util.BaseEntity;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.IntStream;
 
 @Entity
+@Builder
 @NoArgsConstructor
 @Getter(AccessLevel.PACKAGE)
 @Setter(AccessLevel.PACKAGE)
+@AllArgsConstructor
 class Appointment extends BaseEntity {
 
     @Id
@@ -44,7 +54,7 @@ class Appointment extends BaseEntity {
     private LocalTime appointmentTime;
 
     @Column(nullable = false)
-    private int duration; // domyślnie 60 min
+    private Integer duration; // ??domyślnie 60 min może lepiej w godzinach liczyć aby później dodawać żeby wyliczyć zajmowane godziny ??
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
@@ -56,7 +66,8 @@ class Appointment extends BaseEntity {
     @Lob
     private String appointmentNotes;
 
-    @ManyToOne
+    @ManyToOne//(optional = false)
+    //@JoinColumn(name = "dentist_id", referencedColumnName = "id")
     private Dentist dentist;
 
     @ManyToOne(optional = false) // ????
@@ -66,4 +77,19 @@ class Appointment extends BaseEntity {
     @ManyToOne(optional = false)
     @JoinColumn(name = "schedule_id", referencedColumnName = "id")
     private Schedule schedule; // Nowa relacja z grafikiem
+
+    @ElementCollection
+    @CollectionTable(name = "appointment_reserved_hours", joinColumns = @JoinColumn(name = "appointment_id"))
+    @Column(name = "reserved_hour")
+    private Collection<Integer> reservedHours = new ArrayList<>(); // new HashSet<>();
+
+    /**
+     * Wylicza zajęte godziny na podstawie `appointmentTime` i `duration`.
+     */
+    public List<Integer> calculateReservedHours() {
+        int startHour = appointmentTime.getHour();
+        return IntStream.range(startHour, startHour + duration)
+                .boxed() // Przekształca `int` na `Integer`
+                .toList(); // Zwraca wynik jako listę
+    }
 }

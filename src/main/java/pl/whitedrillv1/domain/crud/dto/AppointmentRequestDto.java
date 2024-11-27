@@ -16,13 +16,10 @@ public record AppointmentRequestDto(
         @NotNull(message = "Appointment time is required")
         LocalTime appointmentTime,
 
-        @Positive(message = "Duration must be greater than 0")
+        @Positive(message = "Duration must be greater than 30")
         int duration,
 
         BigDecimal price,
-
-        @NotNull(message = "Status is required")
-        String status,
 
         String appointmentNotes,
 

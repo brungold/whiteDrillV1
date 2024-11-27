@@ -24,6 +24,9 @@ class InMemoryAppointmentRepository implements AppointmentRepository {
 
     @Override
     public Appointment save(Appointment appointment) {
-        return null;
+        long id = this.index.getAndIncrement();
+        appointment.setId(id);
+        db.put(id, appointment);
+        return appointment;
     }
 }

@@ -20,7 +20,7 @@ class AppointmentRetriever {
     }
     AppointmentDto findAppointmentDtoById(Long appointmentId) {
         return appointmentRepository.findById(appointmentId)
-                .map(AppointmentMapper::mapToAppointmentDto)
+                .map(AppointmentMapper::mapFromAppointmentToAppointmentDto)
                 .orElseThrow(() -> new AppointmentNotFoundException("Wizyta o podanym id: " + appointmentId + " nie istanieje."));
     }
 }

@@ -1,10 +1,10 @@
 package pl.whitedrillv1.domain.crud;
 
 enum AppointmentStatus {
-    SCHEDULED,
+    AVAILABLE,
     COMPLETED,
     CANCELLED,
     RESCHEDULED,
-    AVAILABLE,
+    SCHEDULED,
     UNAVAILABLE
 }
