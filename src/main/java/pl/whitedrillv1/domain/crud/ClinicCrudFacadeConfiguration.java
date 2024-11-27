@@ -21,7 +21,8 @@ class ClinicCrudFacadeConfiguration {
                 patientRetriever,
                 scheduleAdder,
                 scheduleRetriever,
-                appointmentAdder
+                appointmentAdder,
+                appointmentRetriever
         );
     }
 }

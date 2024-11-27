@@ -16,6 +16,11 @@ przedziały czasowe raczej wszyte
 Schedule powinien korzystać ze wzorca prototype ?
 chodzi o tworzenie wypenionych zasobów godzinami, ale będie to zależeć od wprowadzonych dat przez uzytkownika
 
+SCHEDULE FINDALL 
+potrzeba zwrotu kilku rodzajów schedule response nie tylko dto
+dla klienta na zewnątrz trzeba wyksponowac tylko wolne godziny
+
+
 
 #### ScheduleController:
 GET /api/schedule/{id}

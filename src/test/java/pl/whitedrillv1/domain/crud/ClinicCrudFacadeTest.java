@@ -2,17 +2,20 @@ package pl.whitedrillv1.domain.crud;
 
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.springframework.data.domain.Pageable;
 import pl.whitedrillv1.domain.crud.dto.AddressDto;
 import pl.whitedrillv1.domain.crud.dto.AppointmentDto;
 import pl.whitedrillv1.domain.crud.dto.AppointmentRequestDto;
 import pl.whitedrillv1.domain.crud.dto.PatientDto;
 import pl.whitedrillv1.domain.crud.dto.PatientGenderDto;
 import pl.whitedrillv1.domain.crud.dto.PatientRequestDto;
+import pl.whitedrillv1.domain.crud.dto.ScheduleDto;
 import pl.whitedrillv1.domain.crud.dto.ScheduleRequestDto;
 import pl.whitedrillv1.domain.crud.dto.ScheduleResponseDto;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -273,6 +276,50 @@ public class ClinicCrudFacadeTest {
                 .hasMessage("Dla tej daty 2025-05-20 jest już utworzony grafik pracy.");
     }
 
+    //TC for findAllSchedules
+    @Test
+    @DisplayName("Should retrieve all schedules")
+    public void should_retrieve_all_schedules() {
+        //given
+        LocalDate futureDate = LocalDate.of(2025, 5, 20);
+        LocalTime startTime = LocalTime.of(9, 0);
+        LocalTime endTime = LocalTime.of(18, 0);
+        ScheduleRequestDto requestDto = new ScheduleRequestDto(
+                futureDate,
+                startTime,
+                endTime
+        );
+
+        LocalDate futureDate2 = LocalDate.of(2025, 5, 21);
+        LocalTime startTime2 = LocalTime.of(10, 0);
+        LocalTime endTime2 = LocalTime.of(20, 0);
+        ScheduleRequestDto requestDto2 = new ScheduleRequestDto(
+                futureDate2,
+                startTime2,
+                endTime2
+        );
+
+        LocalDate futureDate3 = LocalDate.of(2025, 5, 22);
+        LocalTime startTime3 = LocalTime.of(9, 0);
+        LocalTime endTime3 = LocalTime.of(20, 0);
+        ScheduleRequestDto requestDto3 = new ScheduleRequestDto(
+                futureDate3,
+                startTime3,
+                endTime3
+        );
+
+        ScheduleResponseDto schedule = clinicCrudFacade.addSchedule(requestDto);
+        ScheduleResponseDto schedule2 = clinicCrudFacade.addSchedule(requestDto2);
+        ScheduleResponseDto schedule3 = clinicCrudFacade.addSchedule(requestDto3);
+
+        //when
+        List<ScheduleDto> allSchedules = clinicCrudFacade.findAllSchedules(Pageable.unpaged());
+
+        //then
+        assertThat(allSchedules).isNotNull();
+        assertThat(allSchedules).hasSize(3);
+
+    }
 
 
     /* ===============================
@@ -340,12 +387,22 @@ public class ClinicCrudFacadeTest {
 
         //when
         AppointmentDto appointmentDto = clinicCrudFacade.addAppointment(appointmentRequestDto);
+        Long AppointmentDtoId = appointmentDto.id();
+        //     TC for -> findAppointmentDtoById
+        AppointmentDto appointmentDtoById = clinicCrudFacade.findAppointmentDtoById(AppointmentDtoId);
 
         //then
         assertThat(appointmentDto).isNotNull();
+        assertThat(appointmentDtoById).isNotNull();
+        assertThat(appointmentDto.id()).isEqualTo(AppointmentDtoId);
+        assertThat(appointmentDtoById.appointmentDate()).isEqualTo(LocalDate.of(2025, 5, 20));
+        assertThat(appointmentDtoById.appointmentTime()).isEqualTo(LocalTime.of(9, 0));
+        assertThat(appointmentDtoById.dentistId()).isEqualTo(1L);
+        assertThat(appointmentDtoById.patientName()).isEqualTo("John Doe");
+        assertThat(appointmentDtoById.duration()).isEqualTo(1);
 
     }
-    // TC for -> findAppointmentDtoById
+//     TC for -> findAppointmentDtoById
 //    @Test
 //    @DisplayName("Should retrieve appointment by id")
 //    public void should_retrieve_appointment_by_id() {

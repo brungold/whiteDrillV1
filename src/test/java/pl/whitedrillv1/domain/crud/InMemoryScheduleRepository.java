@@ -1,7 +1,10 @@
 package pl.whitedrillv1.domain.crud;
 
+import org.springframework.data.domain.Pageable;
+
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -37,5 +40,11 @@ class InMemoryScheduleRepository implements ScheduleRepository {
     public boolean existsByDate(LocalDate date) {
         return db.values().stream()
                 .anyMatch(schedule -> schedule.getDate().equals(date));
+    }
+
+    //TODO
+    @Override
+    public List<Schedule> findAll(final Pageable pageable) {
+        return db.values().stream().toList();
     }
 }
