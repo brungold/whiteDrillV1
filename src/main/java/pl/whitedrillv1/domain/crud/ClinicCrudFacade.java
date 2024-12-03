@@ -7,6 +7,7 @@ import pl.whitedrillv1.domain.crud.dto.AppointmentDto;
 import pl.whitedrillv1.domain.crud.dto.AppointmentRequestDto;
 import pl.whitedrillv1.domain.crud.dto.PatientDto;
 import pl.whitedrillv1.domain.crud.dto.PatientRequestDto;
+import pl.whitedrillv1.domain.crud.dto.ScheduleAvailableHoursDto;
 import pl.whitedrillv1.domain.crud.dto.ScheduleDto;
 import pl.whitedrillv1.domain.crud.dto.ScheduleRequestDto;
 import pl.whitedrillv1.domain.crud.dto.ScheduleResponseDto;
@@ -28,7 +29,7 @@ public class ClinicCrudFacade {
 
     // Patient methods
     public PatientDto addPatient(PatientRequestDto dto) {
-        return  patientAdder.addPatient(dto);
+        return patientAdder.addPatient(dto);
     }
 
     public Set<PatientDto> findAllPatients() {
@@ -48,12 +49,16 @@ public class ClinicCrudFacade {
         return scheduleRetriever.findAllSchedules(pageable);
     }
 
+    public ScheduleDto findScheduleDtoById(Long id) {
+        return scheduleRetriever.findScheduleDtoById(id);
+    }
+
     public ScheduleDto findScheduleDtoByDate(LocalDate date) {
         return scheduleRetriever.findScheduleDtoByDate(date);
     }
 
-    public ScheduleDto findScheduleDtoById(Long id) {
-        return scheduleRetriever.findScheduleDtoById(id);
+    public ScheduleAvailableHoursDto findAvailableHoursByDate(LocalDate date) {
+        return scheduleRetriever.findAvailableHoursByDate(date);
     }
 
     // Appointment methods

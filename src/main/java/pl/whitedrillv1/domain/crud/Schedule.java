@@ -1,11 +1,14 @@
 package pl.whitedrillv1.domain.crud;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
@@ -41,28 +44,34 @@ class Schedule extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private LocalDate date; // Konkretny dzień, np. 2024-10-20
+    private LocalDate date;
 
     @Column(nullable = false)
-    private LocalTime startTime; // Godzina rozpoczęcia dostępności, np. 09:00
+    private LocalTime startTime;
 
     @Column(nullable = false)
-    private LocalTime endTime; // Godzina zakończenia dostępności, np. 17:00
+    private LocalTime endTime;
 
     @ManyToOne(optional = false)
     private Dentist dentist; // Umożliwia przypisanie dostępności do konkretnego lekarza
 
-    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Appointment> appointments = new HashSet<>();
 
-    //@Column(name = "booked_hours", columnDefinition = "integer[]") // Tablica w PostgreSQL
-    private Set<Integer> bookedHours = new HashSet<>(); // Przechowuje zajęte godziny w formie unikalnych wartości
+    @ElementCollection
+    @CollectionTable(name = "schedule_booked_hours", joinColumns = @JoinColumn(name = "schedule_id"))
+    @Column(name = "booked_hour")
+    private Set<Integer> bookedHours = new HashSet<>();
 
     @Column
     private String description;
 
     void addAppointment(final Appointment appointment) {
         appointments.add(appointment);
+    }
+
+    void addReservedHoursFromAppointment(final Appointment appointment) {
+        this.bookedHours.addAll(appointment.getReservedHours());
     }
 
     public void removeBookedHours(Set<Integer> hours) {

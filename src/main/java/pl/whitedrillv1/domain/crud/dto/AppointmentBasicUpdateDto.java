@@ -1,12 +1,14 @@
 package pl.whitedrillv1.domain.crud.dto;
 
+import lombok.Builder;
+
+import java.math.BigDecimal;
 import java.time.LocalTime;
 
-public record AppointmentDtoForSchedule(
-        Long id,
+@Builder
+public record AppointmentBasicUpdateDto(
         LocalTime appointmentTime,
         Integer duration,
-        String status,
-        Long patientId
+        BigDecimal price
 ) {
 }

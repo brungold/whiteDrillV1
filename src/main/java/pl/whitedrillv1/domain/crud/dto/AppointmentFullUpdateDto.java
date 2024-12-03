@@ -6,24 +6,14 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-/*
- * DTO dla Encji Appointment, rozważyć czy
- * - podawać patientId, imię nazwisko oraz dentystę
- * - podawać DTO pacjenta aby wyświetlał się w całości
- */
-
 @Builder
-public record AppointmentDto(
-        Long id,
+public record AppointmentFullUpdateDto(
         LocalDate appointmentDate,
         LocalTime appointmentTime,
         Integer duration,
         BigDecimal price,
-        String status,
         String appointmentNotes,
         Long patientId,
-        String patientName,
-        Long dentistId,
-        String dentistName
+        Long dentistId
 ) {
 }

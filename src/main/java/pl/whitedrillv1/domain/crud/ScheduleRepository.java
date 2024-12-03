@@ -4,11 +4,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 interface ScheduleRepository extends Repository<Schedule, Long> {
     Optional<Schedule> findById(Long id);
@@ -32,4 +34,18 @@ interface ScheduleRepository extends Repository<Schedule, Long> {
                 WHERE a.id = :appointmentId
             """)
     void addAppointmentToSchedule (Long scheduleId, Long appointmentId);
+
+//    @Transactional
+//    @Modifying
+//    @Query("""
+//    update Schedule s
+//    set s.appointments = CONCAT(s.appointments, :appointment),
+//        s.bookedHours = CONCAT(s.bookedHours, :bookedHours)
+//    where s.id = :id
+//""")
+//    int updateAppointmentsAndBookedHours(
+//            @Param("appointment") Appointment appointment,
+//            @Param("bookedHours") Set<Integer> bookedHours,
+//            @Param("id") Long id
+//    );
 }

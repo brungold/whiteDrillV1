@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
@@ -17,7 +18,6 @@ import java.util.stream.IntStream;
 class AppointmentAdder {
 
     private final AppointmentRepository appointmentRepository;
-    private final AppointmentRetriever appointmentRetriever;
     private final ScheduleRetriever scheduleRetriever;
     private final PatientRepository patientRepository;
     private final DentistRepository dentistRepository;
@@ -27,13 +27,15 @@ class AppointmentAdder {
         LocalTime startTime = appointmentRequestDto.appointmentTime();
         Integer duration = appointmentRequestDto.duration();
 
-
         Schedule schedule = scheduleRetriever.findScheduleByDate(date);
 
         // 2. Wylicz godziny zajmowane przez wizytę
-        List<Integer> reservedHours = calculateReservedHours(
-                appointmentRequestDto.appointmentTime(),
-                appointmentRequestDto.duration());
+        Appointment tempAppointment = Appointment.builder()
+                .appointmentTime(startTime)
+                .duration(duration)
+                .build();
+
+        Set<Integer> reservedHours = tempAppointment.calculateReservedHours();
 
         // 3. Sprawdź, czy godziny są dostępne
         if (!areHoursAvailable(reservedHours, schedule.getBookedHours())) {
@@ -57,33 +59,23 @@ class AppointmentAdder {
                 .reservedHours(reservedHours)
                 .build();
 
-        // 7. Zapisz wizytę
-        appointmentRepository.save(appointment);
-
-        // 8. Przypisuje wizytę do danego dnia
+        // 7. Przypisuje wizytę do danego dnia
         schedule.addAppointment(appointment);
+        schedule.addReservedHoursFromAppointment(appointment);
 
-        //TODO
-        //trzeba edytować schedule w bazie i dodać mu appointment
+        // 8. Zapisz wizytę
+        appointmentRepository.save(appointment);
 
         return AppointmentMapper.mapFromAppointmentToAppointmentDto(appointment);
     }
-
-    public void addAppointmentToSchedule(final Long ScheduleId,final Long AppointmentId) {
-        Schedule schedule = scheduleRetriever.findScheduleById(ScheduleId);
-        Appointment appointment = appointmentRetriever.findAppointmentById(AppointmentId);
-        schedule.addAppointment(appointment);
-    }
-
-    private List<Integer> calculateReservedHours(LocalTime startTime, Integer duration) {
-        int startHour = startTime.getHour(); // wrapping startTime into integer hour
-        return IntStream.range(startHour, startHour + duration)
-                .boxed() // wrapping into Integer obj
-                .toList(); // return as list
-    }
-
-    private boolean areHoursAvailable(List<Integer> reservedHours, Set<Integer> bookedHours) {
-        // Sprawdzam jakakolwiek godzina z `reservedHours` jest zajęta w `bookedHours`
+    /**
+     * Sprawdza, czy godziny są dostępne w harmonogramie.
+     *
+     * @param reservedHours godziny zajmowane przez wizytę
+     * @param bookedHours   zajęte godziny w harmonogramie
+     * @return true, jeśli godziny są dostępne
+     */
+    private boolean areHoursAvailable(Set<Integer> reservedHours, Set<Integer> bookedHours) {
         return reservedHours.stream().noneMatch(bookedHours::contains);
     }
 }

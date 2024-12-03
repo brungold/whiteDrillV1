@@ -4,10 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import pl.whitedrillv1.domain.crud.dto.ScheduleAvailableHoursDto;
 import pl.whitedrillv1.domain.crud.dto.ScheduleDto;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Log4j2
 @Service
@@ -54,5 +59,24 @@ class ScheduleRetriever {
         if (scheduleRepository.existsByDate(date)) {
             throw new ScheduleAlreadyExistsException("Dla tej daty " + date + " jest już utworzony grafik pracy.");
         }
+    }
+
+    public ScheduleAvailableHoursDto findAvailableHoursByDate(LocalDate date) {
+        Schedule schedule = findScheduleByDate(date);
+
+        // Oblicz zakres godzin pracy
+        Set<Integer> allHours = IntStream.range(schedule.getStartTime().getHour(), schedule.getEndTime().getHour())
+                .boxed()
+                .collect(Collectors.toSet());
+
+        // Oblicz wolne godziny jako różnicę
+        TreeSet<Integer> availableHours = allHours.stream()
+                .filter(hour -> !schedule.getBookedHours().contains(hour))
+                .collect(Collectors.toCollection(TreeSet::new));
+
+        log.info("Available hours for schedule on {}: {}", date, availableHours);
+
+        // Mapuj TreeSet na ScheduleAvailableHoursDto
+        return ScheduleMapper.mapFromTreeSetWithAvailableHoursToScheduleAvailableHoursDto(date, availableHours);
     }
 }

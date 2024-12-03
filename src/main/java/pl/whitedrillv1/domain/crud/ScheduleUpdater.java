@@ -1,15 +1,15 @@
 package pl.whitedrillv1.domain.crud;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
-import pl.whitedrillv1.domain.crud.dto.ScheduleDto;
 
 import java.util.List;
-import java.util.Optional;
 
 @Log4j2
 @Service
+@Transactional
 @AllArgsConstructor
 class ScheduleUpdater {
 
@@ -17,8 +17,22 @@ class ScheduleUpdater {
     private final ScheduleRetriever scheduleRetriever;
     private final AppointmentRetriever appointmentRetriever;
 
-    public void addAppointmentToSchedule(Long id, Long appointmentId) {
+    public void addAppointmentToSchedule(final Long ScheduleId,final Long AppointmentId) {
+        Schedule schedule = scheduleRetriever.findScheduleById(ScheduleId);
+        Appointment appointment = appointmentRetriever.findAppointmentById(AppointmentId);
+        schedule.addAppointment(appointment);
+    }
 
+
+    public void addAppointmentAndBookedHoursToSchedule(final Long id, final Long appointmentId) {
+        Schedule schedule = scheduleRetriever.findScheduleById(id);
+        Appointment appointment = appointmentRetriever.findAppointmentById(appointmentId);
+
+        schedule.addAppointment(appointment);
+        schedule.addReservedHoursFromAppointment(appointment);
+
+        log.info("Schedule updated by adding appointment with id: " + appointmentId
+                + " and appointment booked hours: " + appointment.getReservedHours());
     }
 
     public void deleteAppointmentToSchedule(Long id, Long appointmentId) {

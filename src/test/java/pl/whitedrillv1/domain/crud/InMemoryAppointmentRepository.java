@@ -29,4 +29,9 @@ class InMemoryAppointmentRepository implements AppointmentRepository {
         db.put(id, appointment);
         return appointment;
     }
+
+    @Override
+    public void deleteById(Long id) {
+        db.remove(id);
+    }
 }

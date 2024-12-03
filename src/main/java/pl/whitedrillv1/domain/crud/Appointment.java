@@ -24,9 +24,9 @@ import pl.whitedrillv1.domain.crud.util.BaseEntity;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Entity
@@ -61,7 +61,7 @@ class Appointment extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(length = 10, nullable = false)
-    private AppointmentStatus status; // Przykład wartości: 'scheduled', 'completed', 'cancelled'
+    private AppointmentStatus status;
 
     @Lob
     private String appointmentNotes;
@@ -81,15 +81,15 @@ class Appointment extends BaseEntity {
     @ElementCollection
     @CollectionTable(name = "appointment_reserved_hours", joinColumns = @JoinColumn(name = "appointment_id"))
     @Column(name = "reserved_hour")
-    private Collection<Integer> reservedHours = new ArrayList<>(); // new HashSet<>();
+    private Set<Integer> reservedHours = new HashSet<>();
 
     /**
      * Wylicza zajęte godziny na podstawie `appointmentTime` i `duration`.
      */
-    public List<Integer> calculateReservedHours() {
+    public Set<Integer> calculateReservedHours() {
         int startHour = appointmentTime.getHour();
         return IntStream.range(startHour, startHour + duration)
-                .boxed() // Przekształca `int` na `Integer`
-                .toList(); // Zwraca wynik jako listę
+                .boxed()
+                .collect(Collectors.toSet());
     }
 }
