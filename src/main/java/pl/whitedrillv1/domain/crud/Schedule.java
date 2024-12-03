@@ -77,16 +77,4 @@ class Schedule extends BaseEntity {
     public void removeBookedHours(Set<Integer> hours) {
         bookedHours.removeAll(hours); // Usuwa godziny ze zbioru
     }
-
-    /*
-    CREATE TABLE schedule (
-    id SERIAL PRIMARY KEY,
-    date DATE NOT NULL,
-    start_time TIME NOT NULL,
-    end_time TIME NOT NULL,
-    dentist_id BIGINT NOT NULL,
-    booked_hours INTEGER[], -- Tablica przechowująca godziny
-    description TEXT
-);
-     */
 }

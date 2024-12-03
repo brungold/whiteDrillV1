@@ -9,6 +9,7 @@ import pl.whitedrillv1.domain.crud.dto.AppointmentRequestDto;
 import pl.whitedrillv1.domain.crud.dto.PatientDto;
 import pl.whitedrillv1.domain.crud.dto.PatientGenderDto;
 import pl.whitedrillv1.domain.crud.dto.PatientRequestDto;
+import pl.whitedrillv1.domain.crud.dto.ScheduleAvailableHoursDto;
 import pl.whitedrillv1.domain.crud.dto.ScheduleDto;
 import pl.whitedrillv1.domain.crud.dto.ScheduleRequestDto;
 import pl.whitedrillv1.domain.crud.dto.ScheduleResponseDto;
@@ -314,12 +315,22 @@ public class ClinicCrudFacadeTest {
 
         //when
         List<ScheduleDto> allSchedules = clinicCrudFacade.findAllSchedules(Pageable.unpaged());
+        ScheduleAvailableHoursDto availableHoursForFutureDate = clinicCrudFacade.findAvailableHoursByDate(futureDate);
 
         //then
         assertThat(allSchedules).isNotNull();
         assertThat(allSchedules).hasSize(3);
 
+        // Verify available hours for a specific schedule
+        assertThat(availableHoursForFutureDate).isNotNull();
+        assertThat(availableHoursForFutureDate.date()).isEqualTo(futureDate);
+        assertThat(availableHoursForFutureDate.availableHours()).isNotEmpty();
+        assertThat(availableHoursForFutureDate.availableHours()).containsExactly(
+                9, 10, 11, 12, 13, 14, 15, 16, 17  // Expected hours
+        );
     }
+
+
 
 
     /* ===============================

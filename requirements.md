@@ -28,8 +28,10 @@ GET /api/schedule/{date}
 GET /api/schedule/all(Paginacja)
 GET /api/schedule/getScheduleWithAvailableSlots
 GET /api/schedule/getAllScheduleWithAvailableSlots(Paginacja)
+POST /api/schedule
 ##### **ScheduleController:** 
 wyświetla wolne godziny w schedule 
+wyświetla umówione Appointments (czy da się je ułożyc godzinach od najwcześniejszcyh)
 wyświetla zabookowane godziny w schedule
 -> schedul musi mieć przedziały czasowe, tylko jak je zaimplementować w jakiej formie - coś w stylu BaseEnity tyle ze z godzinami
 schedule musi mieć 'godziny' ?? DOPRECYZOWAĆ
@@ -43,6 +45,11 @@ PUT /api/patients/{id}
 DELETE /api/patients/{id}
 ##### **Questioned ?? food for thought**
 GET /api/patients/dentist/{name}
+
+#### AppointmentController:
+
+##### **Questioned ?? food for thought**
+
 
 #### DentalWorkController
 This controller handles CRUD operations for dental works.
@@ -66,3 +73,17 @@ DELETE /api/dentists/{id}
 GET /api/dentists
 GET /api/dentists?address={address}
 GET /api/dentists?clinic={clinic}
+
+
+Scheule
+/*
+CREATE TABLE schedule (
+id SERIAL PRIMARY KEY,
+date DATE NOT NULL,
+start_time TIME NOT NULL,
+end_time TIME NOT NULL,
+dentist_id BIGINT NOT NULL,
+booked_hours INTEGER[], -- Tablica przechowująca godziny
+description TEXT
+);
+*/
