@@ -20,6 +20,7 @@ CREATE TABLE patient
     version         BIGINT DEFAULT 0,
     CONSTRAINT fk_address FOREIGN KEY (address_id) REFERENCES address (id) ON DELETE SET NULL,
     CONSTRAINT unique_pesel UNIQUE (pesel),
+
     CONSTRAINT unique_email UNIQUE (email)
 );
 
