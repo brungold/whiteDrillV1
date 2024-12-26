@@ -1,4 +1,4 @@
-package pl.whitedrillv1.infrastructure.schedule.dto;
+package pl.whitedrillv1.infrastructure.crud.schedule.dto;
 
 import pl.whitedrillv1.domain.crud.dto.ScheduleDto;
 

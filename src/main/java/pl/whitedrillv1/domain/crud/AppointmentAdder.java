@@ -3,14 +3,20 @@ package pl.whitedrillv1.domain.crud;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.whitedrillv1.domain.crud.Dentist;
+import pl.whitedrillv1.domain.crud.DentistNotFoundException;
+import pl.whitedrillv1.domain.crud.DentistRepository;
+import pl.whitedrillv1.domain.crud.HoursAlreadyBookedException;
+import pl.whitedrillv1.domain.crud.Patient;
+import pl.whitedrillv1.domain.crud.PatientNotFoundException;
+import pl.whitedrillv1.domain.crud.PatientRepository;
+import pl.whitedrillv1.domain.crud.Schedule;
+import pl.whitedrillv1.domain.crud.ScheduleRetriever;
 import pl.whitedrillv1.domain.crud.dto.AppointmentDto;
 import pl.whitedrillv1.domain.crud.dto.AppointmentRequestDto;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Service
 @AllArgsConstructor

@@ -2,9 +2,7 @@ package pl.whitedrillv1.domain.crud;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
+import pl.whitedrillv1.domain.crud.DentistRetriever;
 
 @Service
 @AllArgsConstructor

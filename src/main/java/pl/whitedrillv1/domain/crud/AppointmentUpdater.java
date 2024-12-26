@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.whitedrillv1.domain.crud.HoursAlreadyBookedException;
+import pl.whitedrillv1.domain.crud.Schedule;
+import pl.whitedrillv1.domain.crud.ScheduleRepository;
 import pl.whitedrillv1.domain.crud.dto.AppointmentBasicUpdateDto;
 
 import java.time.LocalTime;

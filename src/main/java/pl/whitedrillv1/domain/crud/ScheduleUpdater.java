@@ -35,7 +35,7 @@ class ScheduleUpdater {
                 + " and appointment booked hours: " + appointment.getReservedHours());
     }
 
-    public void deleteAppointmentToSchedule(Long id, Long appointmentId) {
+    public void deleteAppointmentFromSchedule(Long id, Long appointmentId) {
 
     }
 

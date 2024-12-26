@@ -47,6 +47,7 @@ DELETE /api/patients/{id}
 GET /api/patients/dentist/{name}
 
 #### AppointmentController:
+    WYSZUKAJ PIERWSZEJ WOLNEJ DATY WIZYTY
 
 ##### **Questioned ?? food for thought**
 
@@ -75,6 +76,28 @@ GET /api/dentists?address={address}
 GET /api/dentists?clinic={clinic}
 
 
+curl -X 'POST' \
+'http://localhost:8080/patients' \
+-H 'accept: */*' \
+-H 'Content-Type: application/json' \
+-d '{
+"firstName": "Jon",
+"lastName": "Doe",
+"birthDate": "1990-05-039",
+"phone": "506002222",
+"email": "jon.doe@gmail.com",
+"patientGender": "MALE",
+"pesel": "90050324878",
+"addressDto": {
+"postalCode": 02-111,
+"city": "Warszawa",
+"street": "duga",
+"houseNumber": 1,
+"apartmentNumber": 12
+}
+}'
+
+
 Scheule
 /*
 CREATE TABLE schedule (
@@ -87,3 +110,6 @@ booked_hours INTEGER[], -- Tablica przechowująca godziny
 description TEXT
 );
 */
+
+
+Zmiany w Schedule, np podstawowa zmiana w Appointment czy wystarczy że tylko przez AppoitnmentUpdater ?

@@ -1,5 +1,6 @@
 package pl.whitedrillv1.domain.crud;
 
+
 class ClinicCrudFacadeConfiguration {
 
     public static ClinicCrudFacade createClinicCrudFacade(
@@ -22,7 +23,8 @@ class ClinicCrudFacadeConfiguration {
                 scheduleAdder,
                 scheduleRetriever,
                 appointmentAdder,
-                appointmentRetriever
+                appointmentRetriever,
+                dentistRetriever
         );
     }
 }

@@ -31,7 +31,7 @@
         <swagger.version>2.0.2</swagger.version>
     </properties>
     <dependencies>
-        <!-- SPRING -->
+<!--         SPRING -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
@@ -97,5 +97,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

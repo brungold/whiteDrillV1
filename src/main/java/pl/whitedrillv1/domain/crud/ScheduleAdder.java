@@ -1,6 +1,7 @@
 package pl.whitedrillv1.domain.crud;
 
 import lombok.extern.log4j.Log4j2;
+
 import pl.whitedrillv1.domain.crud.dto.DentistDto;
 import pl.whitedrillv1.domain.crud.dto.ScheduleResponseDto;
 import pl.whitedrillv1.domain.crud.dto.ScheduleRequestDto;

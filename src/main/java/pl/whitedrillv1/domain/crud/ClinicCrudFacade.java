@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.whitedrillv1.domain.crud.dto.AppointmentDto;
 import pl.whitedrillv1.domain.crud.dto.AppointmentRequestDto;
+import pl.whitedrillv1.domain.crud.dto.DentistDto;
 import pl.whitedrillv1.domain.crud.dto.PatientDto;
 import pl.whitedrillv1.domain.crud.dto.PatientRequestDto;
 import pl.whitedrillv1.domain.crud.dto.ScheduleAvailableHoursDto;
@@ -19,13 +20,13 @@ import java.util.Set;
 @Service
 @AllArgsConstructor
 public class ClinicCrudFacade {
-
     private final PatientAdder patientAdder;
     private final PatientRetriever patientRetriever;
     private final ScheduleAdder scheduleAdder;
     private final ScheduleRetriever scheduleRetriever;
     private final AppointmentAdder appointmentAdder;
     private final AppointmentRetriever appointmentRetriever;
+    private final DentistRetriever dentistRetriever;
 
     // Patient methods
     public PatientDto addPatient(PatientRequestDto dto) {
@@ -68,5 +69,10 @@ public class ClinicCrudFacade {
 
     public AppointmentDto findAppointmentDtoById(Long id) {
         return appointmentRetriever.findAppointmentDtoById(id);
+    }
+
+    // Dentist methods
+    public DentistDto findDentistDtoById(Long id) {
+        return dentistRetriever.findDentistDtoById(id);
     }
 }

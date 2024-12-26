@@ -1,4 +1,4 @@
-package pl.whitedrillv1.infrastructure.schedule;
+package pl.whitedrillv1.infrastructure.crud.schedule;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,13 +17,14 @@ import pl.whitedrillv1.domain.crud.ClinicCrudFacade;
 import pl.whitedrillv1.domain.crud.dto.ScheduleDto;
 import pl.whitedrillv1.domain.crud.dto.ScheduleRequestDto;
 import pl.whitedrillv1.domain.crud.dto.ScheduleResponseDto;
-import pl.whitedrillv1.infrastructure.schedule.dto.CreatedScheduleResponseDto;
-import pl.whitedrillv1.infrastructure.schedule.dto.GetAllSchedulesResponseDto;
-import pl.whitedrillv1.infrastructure.schedule.dto.GetScheduleResponseDto;
+import pl.whitedrillv1.infrastructure.crud.schedule.dto.CreatedScheduleResponseDto;
+import pl.whitedrillv1.infrastructure.crud.schedule.dto.GetAllSchedulesResponseDto;
+import pl.whitedrillv1.infrastructure.crud.schedule.dto.GetScheduleResponseDto;
+import pl.whitedrillv1.infrastructure.crud.schedule.dto.UpdateScheduleRequestDto;
 
 import java.util.List;
 
-import static pl.whitedrillv1.infrastructure.schedule.ScheduleControllerMapper.*;
+import static pl.whitedrillv1.infrastructure.crud.schedule.ScheduleControllerMapper.*;
 
 @Log4j2
 @RestController
@@ -55,4 +57,9 @@ public class ScheduleRestController {
         log.info("Post schedule: " + response);
         return ResponseEntity.ok(response);
     }
+
+//    @PutMapping("/{id}")
+//    public ResponseEntity<ScheduleDto> updateSchedule(@PathVariable Long id, @RequestBody @Valid UpdateScheduleRequestDto scheduleRequestDto) {
+//        ScheduleDto newScheduleDto =
+//    }
 }

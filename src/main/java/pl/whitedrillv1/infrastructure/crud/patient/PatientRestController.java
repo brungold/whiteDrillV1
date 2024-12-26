@@ -1,4 +1,4 @@
-package pl.whitedrillv1.infrastructure.patient;
+package pl.whitedrillv1.infrastructure.crud.patient;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.whitedrillv1.domain.crud.ClinicCrudFacade;
 import pl.whitedrillv1.domain.crud.dto.PatientDto;
 import pl.whitedrillv1.domain.crud.dto.PatientRequestDto;
-import pl.whitedrillv1.infrastructure.patient.dto.CreatePatientResponseDto;
-import pl.whitedrillv1.infrastructure.patient.dto.GetAllPatientsResponseDto;
-import pl.whitedrillv1.infrastructure.patient.dto.GetPatientResponseDto;
+import pl.whitedrillv1.infrastructure.crud.patient.dto.CreatePatientResponseDto;
+import pl.whitedrillv1.infrastructure.crud.patient.dto.GetAllPatientsResponseDto;
+import pl.whitedrillv1.infrastructure.crud.patient.dto.GetPatientResponseDto;
 
 import java.util.Set;
 

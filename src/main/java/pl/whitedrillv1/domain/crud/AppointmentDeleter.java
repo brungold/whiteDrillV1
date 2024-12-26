@@ -4,6 +4,9 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import pl.whitedrillv1.domain.crud.Schedule;
+import pl.whitedrillv1.domain.crud.ScheduleRepository;
+import pl.whitedrillv1.domain.crud.ScheduleRetriever;
 
 @Slf4j
 @Service

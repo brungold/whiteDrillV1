@@ -19,6 +19,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.whitedrillv1.domain.crud.AppointmentStatus;
+import pl.whitedrillv1.domain.crud.Dentist;
+import pl.whitedrillv1.domain.crud.Patient;
+import pl.whitedrillv1.domain.crud.Schedule;
 import pl.whitedrillv1.domain.crud.util.BaseEntity;
 
 import java.math.BigDecimal;
