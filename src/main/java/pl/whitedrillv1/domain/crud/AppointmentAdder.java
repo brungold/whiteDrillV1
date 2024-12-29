@@ -63,13 +63,17 @@ class AppointmentAdder {
                 .patient(patient)
                 .dentist(dentist)
                 .reservedHours(reservedHours)
+                .schedule(schedule) // Ustawienie harmonogramu!
                 .build();
 
-        // 7. Przypisuje wizytę do danego dnia
+//        // zamiast dodawać schedle w builder wyżej przypisuje przez set
+//        appointment.setSchedule(schedule);
+
+        // 6. Przypisuje wizytę do danego dnia
         schedule.addAppointment(appointment);
         schedule.addReservedHoursFromAppointment(appointment);
 
-        // 8. Zapisz wizytę
+        // 7. Zapisz wizytę
         appointmentRepository.save(appointment);
 
         return AppointmentMapper.mapFromAppointmentToAppointmentDto(appointment);

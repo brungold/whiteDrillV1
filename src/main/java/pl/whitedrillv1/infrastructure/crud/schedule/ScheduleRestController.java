@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,7 +19,6 @@ import pl.whitedrillv1.domain.crud.dto.ScheduleResponseDto;
 import pl.whitedrillv1.infrastructure.crud.schedule.dto.CreatedScheduleResponseDto;
 import pl.whitedrillv1.infrastructure.crud.schedule.dto.GetAllSchedulesResponseDto;
 import pl.whitedrillv1.infrastructure.crud.schedule.dto.GetScheduleResponseDto;
-import pl.whitedrillv1.infrastructure.crud.schedule.dto.UpdateScheduleRequestDto;
 
 import java.util.List;
 

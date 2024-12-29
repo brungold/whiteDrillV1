@@ -3,6 +3,7 @@ package pl.whitedrillv1.domain.crud;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import pl.whitedrillv1.domain.crud.dto.AppointmentBasicUpdateDto;
 import pl.whitedrillv1.domain.crud.dto.AppointmentDto;
 import pl.whitedrillv1.domain.crud.dto.AppointmentRequestDto;
 import pl.whitedrillv1.domain.crud.dto.DentistDto;
@@ -27,6 +28,7 @@ public class ClinicCrudFacade {
     private final AppointmentAdder appointmentAdder;
     private final AppointmentRetriever appointmentRetriever;
     private final DentistRetriever dentistRetriever;
+    private final AppointmentUpdater appointmentUpdater;
 
     // Patient methods
     public PatientDto addPatient(PatientRequestDto dto) {
@@ -69,6 +71,10 @@ public class ClinicCrudFacade {
 
     public AppointmentDto findAppointmentDtoById(Long id) {
         return appointmentRetriever.findAppointmentDtoById(id);
+    }
+
+    public AppointmentDto basicAppointmentUpdate(Long id, AppointmentBasicUpdateDto dto) {
+        return appointmentUpdater.updateBasicAppointmentFields(id, dto);
     }
 
     // Dentist methods

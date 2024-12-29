@@ -17,6 +17,7 @@ class ClinicCrudFacadeConfiguration {
         ScheduleRetriever scheduleRetriever = new ScheduleRetriever(scheduleRepository);
         ScheduleAdder scheduleAdder = new ScheduleAdder(dentistAssigner, scheduleRetriever ,scheduleRepository);
         AppointmentAdder appointmentAdder = new AppointmentAdder(appointmentRepository, scheduleRetriever, patientRepository, dentistRepository);
+        AppointmentUpdater appointmentUpdater = new AppointmentUpdater(appointmentRepository, appointmentRetriever, scheduleRepository);
         return new ClinicCrudFacade(
                 patientAdder,
                 patientRetriever,
@@ -24,7 +25,8 @@ class ClinicCrudFacadeConfiguration {
                 scheduleRetriever,
                 appointmentAdder,
                 appointmentRetriever,
-                dentistRetriever
+                dentistRetriever,
+                appointmentUpdater
         );
     }
 }

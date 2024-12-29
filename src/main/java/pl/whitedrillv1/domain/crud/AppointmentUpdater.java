@@ -5,10 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.whitedrillv1.domain.crud.HoursAlreadyBookedException;
-import pl.whitedrillv1.domain.crud.Schedule;
-import pl.whitedrillv1.domain.crud.ScheduleRepository;
 import pl.whitedrillv1.domain.crud.dto.AppointmentBasicUpdateDto;
+import pl.whitedrillv1.domain.crud.dto.AppointmentDto;
 
 import java.time.LocalTime;
 import java.util.HashSet;
@@ -26,10 +24,17 @@ class AppointmentUpdater {
     private final AppointmentRetriever appointmentRetriever;
     private final ScheduleRepository scheduleRepository;
 
-    public void updateBasicAppointmentFields(Long appointmentId, AppointmentBasicUpdateDto updateDto) {
+    public AppointmentDto updateBasicAppointmentFields(Long appointmentId, AppointmentBasicUpdateDto updateDto) {
         Appointment appointment = appointmentRetriever.findAppointmentById(appointmentId);
         Schedule schedule = appointment.getSchedule();
 
+        // Sprawdź dostępność nowej daty (jeśli została podana)
+        if (updateDto.appointmentDate() != null && !updateDto.appointmentDate().equals(appointment.getAppointmentDate())) {
+            if (scheduleRepository.existsByDate(updateDto.appointmentDate())) {
+                throw new DateAlreadyBookedException("Wybrana data jest już zajęta w harmonogramie.");
+            }
+            appointment.setAppointmentDate(updateDto.appointmentDate());
+        }
         // Stare godziny
         Set<Integer> oldReservedHours = new HashSet<>(appointment.getReservedHours());
 
@@ -52,6 +57,11 @@ class AppointmentUpdater {
             appointment.setDuration(updateDto.duration());
         }
 
+        // Aktualizacja ceny (jeśli podano)
+        if (updateDto.price() != null) {
+            appointment.setPrice(updateDto.price());
+        }
+
         // Zaktualizuj godziny w Schedule
         schedule.getBookedHours().removeAll(oldReservedHours); // Usuń stare godziny
         schedule.getBookedHours().addAll(newReservedHours);   // Dodaj nowe godziny
@@ -63,6 +73,10 @@ class AppointmentUpdater {
         // Zapisz zmiany
         appointmentRepository.save(appointment);
         scheduleRepository.save(schedule);
+
+        AppointmentDto dto = AppointmentMapper.mapFromAppointmentToAppointmentDto(appointment);
+
+        return dto;
     }
 
     /**

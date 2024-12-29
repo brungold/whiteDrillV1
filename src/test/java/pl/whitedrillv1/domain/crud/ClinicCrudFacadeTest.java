@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.data.domain.Pageable;
 import pl.whitedrillv1.domain.crud.dto.AddressDto;
+import pl.whitedrillv1.domain.crud.dto.AppointmentBasicUpdateDto;
 import pl.whitedrillv1.domain.crud.dto.AppointmentDto;
 import pl.whitedrillv1.domain.crud.dto.AppointmentRequestDto;
 import pl.whitedrillv1.domain.crud.dto.PatientDto;
@@ -190,36 +191,38 @@ public class ClinicCrudFacadeTest {
                 .containsExactlyInAnyOrder("Doe", "Doe");
 
     }
-     /* ===============================
-    Section: Schedule Entity Tests
-    =============================== */
-     // TC for -> addSchedule
-     @Test
-     @DisplayName("Should add schedule")
-     public void should_add_schedule() {
+
+    /* ===============================
+   Section: Schedule Entity Tests
+   =============================== */
+    // TC for -> addSchedule
+    @Test
+    @DisplayName("Should add schedule")
+    public void should_add_schedule() {
         //given
-         LocalDate futureDate = LocalDate.of(2025, 5, 20);
-         LocalTime startTime = LocalTime.of(9, 0);
-         LocalTime endTime = LocalTime.of(18, 0);
-         ScheduleRequestDto requestDto = new ScheduleRequestDto(
-                 futureDate,
-                 startTime,
-                 endTime
-         );
-         //when
-         ScheduleResponseDto response = clinicCrudFacade.addSchedule(requestDto);
-         //then
-         assertThat(response.id()).isEqualTo(0L);
-         assertThat(response.date()).isEqualTo(futureDate);
-         assertThat(response.date()).isEqualTo(LocalDate.of(2025, 5, 20));
-         assertThat(response.startTime()).isEqualTo(startTime);
-         assertThat(response.startTime()).isEqualTo(LocalTime.of(9, 0));
-         assertThat(response.endTime()).isEqualTo(endTime);
-         assertThat(response.endTime()).isEqualTo(LocalTime.of(18, 0));
-         assertThat(response.dentistDto().id()).isEqualTo(1L);
-         assertThat(response.dentistDto().firstName()).isEqualTo("Oskar");
-         assertThat(response.dentistDto().lastName()).isEqualTo("Test");
-     }
+        LocalDate futureDate = LocalDate.of(2025, 5, 20);
+        LocalTime startTime = LocalTime.of(9, 0);
+        LocalTime endTime = LocalTime.of(18, 0);
+        ScheduleRequestDto requestDto = new ScheduleRequestDto(
+                futureDate,
+                startTime,
+                endTime
+        );
+        //when
+        ScheduleResponseDto response = clinicCrudFacade.addSchedule(requestDto);
+        //then
+        assertThat(response.id()).isEqualTo(0L);
+        assertThat(response.date()).isEqualTo(futureDate);
+        assertThat(response.date()).isEqualTo(LocalDate.of(2025, 5, 20));
+        assertThat(response.startTime()).isEqualTo(startTime);
+        assertThat(response.startTime()).isEqualTo(LocalTime.of(9, 0));
+        assertThat(response.endTime()).isEqualTo(endTime);
+        assertThat(response.endTime()).isEqualTo(LocalTime.of(18, 0));
+        assertThat(response.dentistDto().id()).isEqualTo(1L);
+        assertThat(response.dentistDto().firstName()).isEqualTo("Oskar");
+        assertThat(response.dentistDto().lastName()).isEqualTo("Test");
+    }
+
     // TC for -> InvalidTimeRangeException
     @Test
     @DisplayName("Should throw InvalidTimeRangeException when end time is before start time")
@@ -331,8 +334,6 @@ public class ClinicCrudFacadeTest {
     }
 
 
-
-
     /* ===============================
     Section: Appointment Entity Tests
     =============================== */
@@ -425,6 +426,98 @@ public class ClinicCrudFacadeTest {
                 );
 
     }
+
+    // TC for -> basicAppointmentUpdate
+    @Test
+    @DisplayName("Should update basic data for an Appointment at the same day")
+    public void should_update_basic_appointment_data_at_the_same_day() {
+        //given
+        PatientRequestDto patient = PatientRequestDto.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .birthDate(LocalDate.of(1980, 5, 15))
+                .phone("1234567890")
+                .email("john.doe@example.com")
+                .patientGender(PatientGenderDto.MALE)
+                .pesel("80051512345")
+                .language("English")
+                .nationality("American")
+                .nip("1234567890")
+                .addressDto(AddressDto
+                        .builder()
+                        .postalCode("12-345")
+                        .city("New York")
+                        .street("Broadway")
+                        .houseNumber(1)
+                        .apartmentNumber(101)
+                        .build())
+                .build();
+        PatientDto patientDto = clinicCrudFacade.addPatient(patient);
+
+        // add Schedule
+        LocalDate futureDate = LocalDate.of(2025, 5, 20);
+        LocalTime startTime = LocalTime.of(9, 0);
+        LocalTime endTime = LocalTime.of(18, 0);
+
+        ScheduleRequestDto scheduleRequestDto = new ScheduleRequestDto(
+                futureDate,
+                startTime,
+                endTime
+        );
+
+        ScheduleResponseDto firstSchedule = clinicCrudFacade.addSchedule(scheduleRequestDto);
+
+        //  First appointment 10:00 - 12:00
+        AppointmentRequestDto firstAppointmentRequestDto = AppointmentRequestDto.builder()
+                .appointmentDate(LocalDate.of(2025, 5, 20))
+                .appointmentTime(LocalTime.of(10, 0))
+                .duration(1)
+                .patientId(patientDto.id())
+                .dentistId(1L)
+                .build();
+
+        AppointmentDto firstAppointmentDto = clinicCrudFacade.addAppointment(firstAppointmentRequestDto);
+        Long firstAppointmentDtoId = firstAppointmentDto.id();
+
+        //  Second appointment 9:00 - 10:00
+        AppointmentRequestDto secondAppointmentRequestDto = AppointmentRequestDto.builder()
+                .appointmentDate(LocalDate.of(2025, 5, 20))
+                .appointmentTime(LocalTime.of(9, 0))
+                .duration(1)
+                .patientId(patientDto.id())
+                .dentistId(1L)
+                .build();
+
+        AppointmentDto secondAppointmentDto = clinicCrudFacade.addAppointment(secondAppointmentRequestDto);
+        Long secondAppointmentDtoId = secondAppointmentDto.id();
+
+        //when
+        AppointmentBasicUpdateDto updateSecondAppointmentDto = AppointmentBasicUpdateDto.builder()
+                .appointmentTime(LocalTime.of(12, 0))
+                .duration(2)
+                .build();
+        clinicCrudFacade.basicAppointmentUpdate(secondAppointmentDtoId, updateSecondAppointmentDto);
+
+        //then
+        AppointmentDto unchangedAppointmentDto = clinicCrudFacade.findAppointmentDtoById(firstAppointmentDtoId);
+        AppointmentDto updatedAppointmentDto = clinicCrudFacade.findAppointmentDtoById(secondAppointmentDtoId);
+            // Assert for the unchanged appointment
+        assertThat(unchangedAppointmentDto).isNotNull();
+        assertThat(unchangedAppointmentDto.appointmentTime()).isEqualTo(LocalTime.of(10, 0));
+        assertThat(unchangedAppointmentDto.duration()).isEqualTo(1);
+        assertThat(unchangedAppointmentDto.patientId()).isEqualTo(patientDto.id());
+        assertThat(unchangedAppointmentDto.dentistId()).isEqualTo(1L);
+        assertThat(unchangedAppointmentDto.appointmentDate()).isEqualTo(LocalDate.of(2025, 5, 20));
+            // Assert for the updated appointment
+        assertThat(updatedAppointmentDto).isNotNull();
+        assertThat(updatedAppointmentDto.appointmentTime()).isEqualTo(LocalTime.of(12, 0));
+        assertThat(updatedAppointmentDto.duration()).isEqualTo(2);
+        assertThat(updatedAppointmentDto.patientId()).isEqualTo(patientDto.id());
+        assertThat(updatedAppointmentDto.dentistId()).isEqualTo(1L);
+        assertThat(updatedAppointmentDto.appointmentDate()).isEqualTo(LocalDate.of(2025, 5, 20));
+    }
+
+
 //     TC for -> findAppointmentDtoById
 //    @Test
 //    @DisplayName("Should retrieve appointment by id")
