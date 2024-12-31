@@ -22,7 +22,14 @@ class UserDetailsServiceImpl implements UserDetailsManager{
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public void createUser(final UserDetails user) {
+    public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
+        return userRepository.findFirstByEmail(username)
+                .map(SecurityUser::new)
+                .orElseThrow(() -> new RuntimeException("not fount user"));
+    }
+
+    @Override
+    public void createUser(UserDetails user) {
         if (userExists(user.getUsername())){
             log.warn("not saved user - already exists");
             throw new RuntimeException("not saved user - already exists");
@@ -57,12 +64,5 @@ class UserDetailsServiceImpl implements UserDetailsManager{
     @Override
     public boolean userExists(final String username) {
         return false;
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-        return userRepository.findFirstByEmail(username)
-                .map(SecurityUser::new)
-                .orElseThrow(() -> new RuntimeException("not fount user"));
     }
 }

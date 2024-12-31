@@ -71,7 +71,7 @@ class Appointment extends BaseEntity {
     private Dentist dentist;
 
     @ManyToOne(optional = false) // ????
-    @JoinColumn(name = "idPatient", referencedColumnName = "id")
+    @JoinColumn(name = "idPatient", referencedColumnName = "id") // a nie patient_id ??
     private Patient patient;
 
     @ManyToOne(optional = false)
