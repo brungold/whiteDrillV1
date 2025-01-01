@@ -1,17 +1,11 @@
-Logika 
-Dodawanie Appointment / Patient
-Docelowo najpierw musi zostać dodany pacjent, zeby można było uwtowrzyć dla niego wizytę.
-(Czy tworzyć opcję dla utworzenia pacjenta razem z wizyta -> chyba nie.)
-Kiedy wpisywać price w Appointment. Na początku przytworzeniu rozumiem że z default = 0 ?
+Logika
 
-Schedule. Dodawanie Appointment.
-Sprawdzam czy o tej godzinie, jest juz jakiś appointment.
-Jak zrobić przedział godzin? czy jako enum czy baze
-czy dawać jako string 9 czy Long 9 ? czy może przedział
+!!!!CZY PACJENT MOŻE MIEĆ UMÓWIONA WIĘCEJ NIŻ JEDNĄ WIZYTE.
+ZABEZPIECZENIE ŻEBY KLIENT NIE NAWRZUCAŁ NIE WIADOMO ILE WIZYT (APPOINTMENT)?!?!?!?!
 
-czy trwanie, duratin jako encje ? 1h, 2h , 3h ,4h czy enum ?
-duration raczej w formie minut 60 min, 120 min 
-przedziały czasowe raczej wszyte 
+GET APPOINTMENTS -> zwróć najbliższa wolną datę
+-> zwróć wolne daty od najbliższej wolnej daty
+
 
 Schedule powinien korzystać ze wzorca prototype ?
 chodzi o tworzenie wypenionych zasobów godzinami, ale będie to zależeć od wprowadzonych dat przez uzytkownika
@@ -74,6 +68,28 @@ DELETE /api/dentists/{id}
 GET /api/dentists
 GET /api/dentists?address={address}
 GET /api/dentists?clinic={clinic}
+
+
+
+Logika
+Dodawanie Appointment / Patient
+Docelowo najpierw musi zostać dodany pacjent, zeby można było uwtowrzyć dla niego wizytę.
+(Czy tworzyć opcję dla utworzenia pacjenta razem z wizyta -> chyba nie.)
+Kiedy wpisywać price w Appointment. Na początku przytworzeniu rozumiem że z default = 0 ?
+
+
+?????
+czy trwanie, duratin jako encje ? 1h, 2h , 3h ,4h czy enum ?
+duration raczej w formie minut 60 min, 120 min
+przedziały czasowe raczej wszyte
+?????
+
+?????
+Schedule. Dodawanie Appointment.
+Sprawdzam czy o tej godzinie, jest juz jakiś appointment.
+Jak zrobić przedział godzin? czy jako enum czy baze
+czy dawać jako string 9 czy Long 9 ? czy może przedział
+?????
 
 
 curl -X 'POST' \

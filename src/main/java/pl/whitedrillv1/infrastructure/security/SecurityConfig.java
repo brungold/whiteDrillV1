@@ -2,6 +2,8 @@ package pl.whitedrillv1.infrastructure.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,9 +30,26 @@ class SecurityConfig {
         return config.getAuthenticationManager();
     }
 
-//    @Bean
-//    SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthTokenFilter jwtAuthTokenFilter) throws Exception {
-//        http.csrf(c -> c.disable());
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(c -> c.disable());
+        http.formLogin(Customizer.withDefaults());
+        http.httpBasic(Customizer.withDefaults());
+        http.authorizeHttpRequests(authorize -> authorize
+                .requestMatchers("/users/register/**").permitAll()
+                .requestMatchers(HttpMethod.GET,"/dentist/**").permitAll()
+                .requestMatchers(HttpMethod.POST,"/appointments/**").permitAll()
+                .requestMatchers(HttpMethod.GET,"/appointments/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PATCH,"/appointments/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST,"/schedule/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET,"/schedule/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET,"/patients/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST,"/patients/**").hasRole("ADMIN")
+                .anyRequest().authenticated());
+        return http.build();
+    }
+//            , JwtAuthTokenFilter jwtAuthTokenFilter) throws Exception {
+//
 //        //http.csrf(Customizer.withDefaults());
 //        http.cors(corsConfigurerCustomizer());
 //        http.formLogin(c -> c.disable());
