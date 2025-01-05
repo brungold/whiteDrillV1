@@ -1,4 +1,4 @@
-package pl.whitedrillv1.infrastructure;
+package pl.whitedrillv1.infrastructure.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
