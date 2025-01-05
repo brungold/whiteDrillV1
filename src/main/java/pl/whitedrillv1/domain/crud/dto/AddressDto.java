@@ -13,7 +13,7 @@ public record AddressDto(
 
         String city,
         String street,
-        int houseNumber,
-        Integer apartmentNumber
+        String houseNumber,
+        String apartmentNumber
 ) {
 }

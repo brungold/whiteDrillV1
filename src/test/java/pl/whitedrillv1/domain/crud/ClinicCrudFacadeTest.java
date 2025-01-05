@@ -56,8 +56,8 @@ public class ClinicCrudFacadeTest {
                         .postalCode("12-345")
                         .city("New York")
                         .street("Broadway")
-                        .houseNumber(1)
-                        .apartmentNumber(101)
+                        .houseNumber("1")
+                        .apartmentNumber("101")
                         .build())
                 .build();
 
@@ -96,8 +96,8 @@ public class ClinicCrudFacadeTest {
                         .postalCode("12-345")
                         .city("New York")
                         .street("Broadway")
-                        .houseNumber(1)
-                        .apartmentNumber(101)
+                        .houseNumber("1")
+                        .apartmentNumber("101")
                         .build())
                 .build();
         PatientDto addedPatient = clinicCrudFacade.addPatient(patient);
@@ -148,8 +148,8 @@ public class ClinicCrudFacadeTest {
                         .postalCode("12-345")
                         .city("New York")
                         .street("Broadway")
-                        .houseNumber(1)
-                        .apartmentNumber(101)
+                        .houseNumber("1")
+                        .apartmentNumber("101")
                         .build())
                 .build();
 
@@ -169,8 +169,8 @@ public class ClinicCrudFacadeTest {
                         .postalCode("12-345")
                         .city("New York")
                         .street("Broadway")
-                        .houseNumber(1)
-                        .apartmentNumber(101)
+                        .houseNumber("1")
+                        .apartmentNumber("101")
                         .build())
                 .build();
         clinicCrudFacade.addPatient(patientNo1);
@@ -358,8 +358,8 @@ public class ClinicCrudFacadeTest {
                         .postalCode("12-345")
                         .city("New York")
                         .street("Broadway")
-                        .houseNumber(1)
-                        .apartmentNumber(101)
+                        .houseNumber("1")
+                        .apartmentNumber("101")
                         .build())
                 .build();
         PatientDto patientDto = clinicCrudFacade.addPatient(patient);
@@ -448,8 +448,8 @@ public class ClinicCrudFacadeTest {
                         .postalCode("12-345")
                         .city("New York")
                         .street("Broadway")
-                        .houseNumber(1)
-                        .apartmentNumber(101)
+                        .houseNumber("1")
+                        .apartmentNumber("101")
                         .build())
                 .build();
         PatientDto patientDto = clinicCrudFacade.addPatient(patient);
