@@ -35,4 +35,14 @@ class InMemoryAppointmentRepository implements AppointmentRepository {
     public void deleteById(Long id) {
         db.remove(id);
     }
+
+    @Override
+    public boolean existsByPatientIdAndStatusFromToday(final Long patientId, final AppointmentStatus status) {
+        return false;
+    }
+
+    @Override
+    public int countFutureAppointmentsByPatient(final Long patientId, final AppointmentStatus status) {
+        return 0;
+    }
 }

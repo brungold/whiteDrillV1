@@ -18,4 +18,9 @@ class AddressRetriever {
                 .map(AddressMapper::mapFromAddressToAddressDto)
                 .orElseThrow(() -> new AddressNotFoundException("Addressu o podanym id " + id + " nie znaleziono"));
     }
+
+    Address findAddressById(Long id) {
+        return addressRepository.findById(id)
+                .orElseThrow(() -> new AddressNotFoundException("Addressu o podanym id " + id + " nie znaleziono"));
+    }
 }

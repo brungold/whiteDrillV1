@@ -30,4 +30,9 @@ class InMemoryPatientRepository implements PatientRepository {
     public Set<Patient> findAll() {
         return new HashSet<>(db.values());
     }
+
+    @Override
+    public void deleteById(final Long id) {
+
+    }
 }

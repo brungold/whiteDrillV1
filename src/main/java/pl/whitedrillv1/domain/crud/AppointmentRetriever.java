@@ -23,4 +23,9 @@ class AppointmentRetriever {
                 .map(AppointmentMapper::mapFromAppointmentToAppointmentDto)
                 .orElseThrow(() -> new AppointmentNotFoundException("Wizyta o podanym id: " + appointmentId + " nie istanieje."));
     }
+
+    public boolean hasUpcomingAppointments(Long patientId) {
+        return appointmentRepository.existsByPatientIdAndStatusFromToday(
+                patientId, AppointmentStatus.SCHEDULED);
+    }
 }

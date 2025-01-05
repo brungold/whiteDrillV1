@@ -1,6 +1,9 @@
 package pl.whitedrillv1.domain.crud;
 
+import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.Repository;
 
 
@@ -15,4 +18,9 @@ interface PatientRepository extends Repository<Patient, Long> {
     Patient save(Patient patient);
 
     Set<Patient> findAll();
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Patient p WHERE p.id = :id")
+    void deleteById(@Param("id") Long id);
 }

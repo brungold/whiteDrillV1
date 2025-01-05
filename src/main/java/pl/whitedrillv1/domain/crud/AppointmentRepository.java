@@ -21,4 +21,24 @@ interface AppointmentRepository extends Repository<Appointment, Long> {
     @Transactional
     @Query("DELETE FROM Appointment a WHERE a.id = :id")
     void deleteById(@Param("id") Long id);
+
+    @Query("""
+        SELECT COUNT(a) > 0
+        FROM Appointment a
+        WHERE a.patient.id = :patientId
+          AND a.status = :status
+          AND a.appointmentDate >= CURRENT_DATE
+       """)
+    boolean existsByPatientIdAndStatusFromToday(@Param("patientId") Long patientId,
+                                                @Param("status") AppointmentStatus status);
+
+    @Query("""
+        SELECT COUNT(a)
+        FROM Appointment a
+        WHERE a.patient.id = :patientId
+          AND a.status = :status
+          AND a.appointmentDate >= CURRENT_DATE
+       """)
+    int countFutureAppointmentsByPatient(@Param("patientId") Long patientId,
+                                         @Param("status") AppointmentStatus status);
 }
