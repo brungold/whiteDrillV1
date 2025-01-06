@@ -11,9 +11,8 @@ public record AppointmentFullUpdateDto(
         LocalDate appointmentDate,
         LocalTime appointmentTime,
         Integer duration,
-        BigDecimal price,
-        String appointmentNotes,
         Long patientId,
-        Long dentistId
-) {
-}
+        Long dentistId,
+        BigDecimal price,
+        String appointmentNotes
+) {}

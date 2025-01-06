@@ -77,6 +77,8 @@ public class ClinicCrudFacade {
         return appointmentUpdater.updateBasicAppointmentFields(id, dto);
     }
 
+    // Patient methods
+
     // Dentist methods
     public DentistDto findDentistDtoById(Long id) {
         return dentistRetriever.findDentistDtoById(id);
