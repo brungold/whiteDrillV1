@@ -63,4 +63,9 @@ class InMemoryScheduleRepository implements ScheduleRepository {
         // Zaktualizuj mapę
         db.put(scheduleId, schedule);
     }
+
+    @Override
+    public List<Schedule> findAllByDentistIdOrderByDateAsc(final Long dentistId) {
+        return List.of();
+    }
 }

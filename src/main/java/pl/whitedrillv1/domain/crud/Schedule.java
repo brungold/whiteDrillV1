@@ -25,6 +25,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Builder
 @Entity
@@ -77,5 +80,15 @@ class Schedule extends BaseEntity {
 
     public void removeBookedHours(Set<Integer> hours) {
         bookedHours.removeAll(hours); // Usuwa godziny ze zbioru
+    }
+
+    public TreeSet<Integer> getAvailableHours() {
+        TreeSet<Integer> workingHours = new TreeSet<>(
+                IntStream.rangeClosed(startTime.getHour(), endTime.getHour() - 1) // Wszystkie godziny w przedziale [start, end)
+                        .boxed()
+                        .collect(Collectors.toSet())
+        );
+        workingHours.removeAll(bookedHours); // Usuń godziny już zajęte
+        return workingHours; // Zwróć dostępne godziny
     }
 }

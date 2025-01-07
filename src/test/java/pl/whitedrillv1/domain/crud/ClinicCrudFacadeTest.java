@@ -23,13 +23,14 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
-public class ClinicCrudFacadeTest {
+public class ClinicCrudFacadeTest implements TestDataFactory, TestDataPatientFactory{
 
     ClinicCrudFacade clinicCrudFacade = ClinicCrudFacadeConfiguration.createClinicCrudFacade(
             new InMemoryPatientRepository(),
             new InMemoryScheduleRepository(),
             new InMemoryDentistRepository(),
-            new InMemoryAppointmentRepository()
+            new InMemoryAppointmentRepository(),
+            new InMemoryAddressRepository()
     );
 
     /* ==========================
@@ -40,26 +41,7 @@ public class ClinicCrudFacadeTest {
     @DisplayName("Should add patient john test with id: 0 when john was sent")
     public void should_add_patient_john_test_with_id_zero_when_john_was_sent() {
         //given
-        PatientRequestDto patient = PatientRequestDto.builder()
-                .firstName("John")
-                .lastName("Doe")
-                .birthDate(LocalDate.of(1980, 5, 15))
-                .phone("1234567890")
-                .email("john.doe@example.com")
-                .patientGender(PatientGenderDto.MALE)
-                .pesel("80051512345")
-                //.maidenName("Smith")
-                .language("English")
-                .nationality("American")
-                .nip("1234567890")
-                .addressDto(AddressDto.builder()
-                        .postalCode("12-345")
-                        .city("New York")
-                        .street("Broadway")
-                        .houseNumber("1")
-                        .apartmentNumber("101")
-                        .build())
-                .build();
+        PatientRequestDto patient = createDefaultPatientRequestDtoNo1();
 
         // when
         PatientDto result = clinicCrudFacade.addPatient(patient);
@@ -80,26 +62,7 @@ public class ClinicCrudFacadeTest {
     @DisplayName("Should retrieve patient by id")
     public void should_retrieve_patient_by_id() {
         //given
-        PatientRequestDto patient = PatientRequestDto.builder()
-                .firstName("John")
-                .lastName("Doe")
-                .birthDate(LocalDate.of(1980, 5, 15))
-                .phone("1234567890")
-                .email("john.doe@example.com")
-                .patientGender(PatientGenderDto.MALE)
-                .pesel("80051512345")
-                //.maidenName("Smith")
-                .language("English")
-                .nationality("American")
-                .nip("1234567890")
-                .addressDto(AddressDto.builder()
-                        .postalCode("12-345")
-                        .city("New York")
-                        .street("Broadway")
-                        .houseNumber("1")
-                        .apartmentNumber("101")
-                        .build())
-                .build();
+        PatientRequestDto patient = createDefaultPatientRequestDtoNo1();
         PatientDto addedPatient = clinicCrudFacade.addPatient(patient);
         assertThat(addedPatient).isNotNull();
 
@@ -133,46 +96,9 @@ public class ClinicCrudFacadeTest {
     @DisplayName("Should retrieve all patients")
     public void should_retrieve_all_patients() {
         //given
-        PatientRequestDto patientNo1 = PatientRequestDto.builder()
-                .firstName("John")
-                .lastName("Doe")
-                .birthDate(LocalDate.of(1980, 5, 15))
-                .phone("1234567890")
-                .email("john.doe@example.com")
-                .patientGender(PatientGenderDto.MALE)
-                .pesel("80051512345")
-                .language("English")
-                .nationality("American")
-                .nip("1234567890")
-                .addressDto(AddressDto.builder()
-                        .postalCode("12-345")
-                        .city("New York")
-                        .street("Broadway")
-                        .houseNumber("1")
-                        .apartmentNumber("101")
-                        .build())
-                .build();
+        PatientRequestDto patientNo1 = createDefaultPatientRequestDtoNo1();
+        PatientRequestDto patientNo2 = createDefaultPatientRequestDtoNo2();
 
-        PatientRequestDto patientNo2 = PatientRequestDto.builder()
-                .firstName("Daisy")
-                .lastName("Doe")
-                .birthDate(LocalDate.of(1990, 5, 25))
-                .phone("1234567899")
-                .email("john.doe@example.com")
-                .patientGender(PatientGenderDto.FEMALE)
-                .pesel("90052513345")
-                .maidenName("Smith")
-                .language("English")
-                .nationality("American")
-                .nip("1234567890")
-                .addressDto(AddressDto.builder()
-                        .postalCode("12-345")
-                        .city("New York")
-                        .street("Broadway")
-                        .houseNumber("1")
-                        .apartmentNumber("101")
-                        .build())
-                .build();
         clinicCrudFacade.addPatient(patientNo1);
         clinicCrudFacade.addPatient(patientNo2);
 
@@ -190,6 +116,34 @@ public class ClinicCrudFacadeTest {
                 .extracting(PatientDto::lastName)
                 .containsExactlyInAnyOrder("Doe", "Doe");
 
+    }
+
+    // TC for deletePatientById
+    @Test
+    @DisplayName("Should delete patient with id 2 and verify remaining patients")
+    public void should_delete_patient_with_id_2_and_verify_remaining_patients() {
+        // given
+        PatientRequestDto patientNo1 = createDefaultPatientRequestDtoNo1();
+        PatientRequestDto patientNo2 = createDefaultPatientRequestDtoNo2();
+
+        // Dodaj pacjentów
+        PatientDto addedPatient1 = clinicCrudFacade.addPatient(patientNo1);
+        PatientDto addedPatient2 = clinicCrudFacade.addPatient(patientNo2);
+
+        // Sprawdź, że dodano dwóch pacjentów
+        Set<PatientDto> allPatientsBeforeDelete = clinicCrudFacade.findAllPatients();
+        assertThat(allPatientsBeforeDelete).hasSize(2);
+        assertThat(allPatientsBeforeDelete).extracting(PatientDto::id)
+                .containsExactlyInAnyOrder(addedPatient1.id(), addedPatient2.id());
+
+        // when
+        clinicCrudFacade.deletePatientById(addedPatient2.id());
+
+        // then
+        Set<PatientDto> allPatientsAfterDelete = clinicCrudFacade.findAllPatients();
+        assertThat(allPatientsAfterDelete).hasSize(1);
+        assertThat(allPatientsAfterDelete).extracting(PatientDto::id)
+                .containsExactly(addedPatient1.id());
     }
 
     /* ===============================
@@ -342,26 +296,7 @@ public class ClinicCrudFacadeTest {
     @DisplayName("Should add new appointment")
     public void should_add_new_appointment() {
         //given
-        PatientRequestDto patient = PatientRequestDto.builder()
-                .firstName("John")
-                .lastName("Doe")
-                .birthDate(LocalDate.of(1980, 5, 15))
-                .phone("1234567890")
-                .email("john.doe@example.com")
-                .patientGender(PatientGenderDto.MALE)
-                .pesel("80051512345")
-                .language("English")
-                .nationality("American")
-                .nip("1234567890")
-                .addressDto(AddressDto
-                        .builder()
-                        .postalCode("12-345")
-                        .city("New York")
-                        .street("Broadway")
-                        .houseNumber("1")
-                        .apartmentNumber("101")
-                        .build())
-                .build();
+        PatientRequestDto patient = createDefaultPatientRequestDtoNo1();
         PatientDto patientDto = clinicCrudFacade.addPatient(patient);
 
         assertThat(patientDto).isNotNull();
@@ -431,71 +366,38 @@ public class ClinicCrudFacadeTest {
     @Test
     @DisplayName("Should update basic data for an Appointment at the same day")
     public void should_update_basic_appointment_data_at_the_same_day() {
-        //given
-        PatientRequestDto patient = PatientRequestDto.builder()
-                .firstName("John")
-                .lastName("Doe")
-                .birthDate(LocalDate.of(1980, 5, 15))
-                .phone("1234567890")
-                .email("john.doe@example.com")
-                .patientGender(PatientGenderDto.MALE)
-                .pesel("80051512345")
-                .language("English")
-                .nationality("American")
-                .nip("1234567890")
-                .addressDto(AddressDto
-                        .builder()
-                        .postalCode("12-345")
-                        .city("New York")
-                        .street("Broadway")
-                        .houseNumber("1")
-                        .apartmentNumber("101")
-                        .build())
-                .build();
+        // given
+        PatientRequestDto patient = createDefaultPatientRequestDtoNo1();
         PatientDto patientDto = clinicCrudFacade.addPatient(patient);
 
-        // add Schedule
-        LocalDate futureDate = LocalDate.of(2025, 5, 20);
-        LocalTime startTime = LocalTime.of(9, 0);
-        LocalTime endTime = LocalTime.of(18, 0);
-
-        ScheduleRequestDto scheduleRequestDto = new ScheduleRequestDto(
-                futureDate,
-                startTime,
-                endTime
-        );
-
+        ScheduleRequestDto scheduleRequestDto = createDefaultScheduleRequestDto();
         ScheduleResponseDto firstSchedule = clinicCrudFacade.addSchedule(scheduleRequestDto);
 
-        //  First appointment 10:00 - 12:00
-        AppointmentRequestDto firstAppointmentRequestDto = AppointmentRequestDto.builder()
-                .appointmentDate(LocalDate.of(2025, 5, 20))
-                .appointmentTime(LocalTime.of(10, 0))
-                .duration(1)
-                .patientId(patientDto.id())
-                .dentistId(1L)
-                .build();
-
+        AppointmentRequestDto firstAppointmentRequestDto = createDefaultAppointmentRequestDto(
+                patientDto.id(),
+                1L,
+                LocalDate.of(2025, 5, 20),
+                LocalTime.of(10, 0),
+                1
+        );
         AppointmentDto firstAppointmentDto = clinicCrudFacade.addAppointment(firstAppointmentRequestDto);
         Long firstAppointmentDtoId = firstAppointmentDto.id();
 
-        //  Second appointment 9:00 - 10:00
-        AppointmentRequestDto secondAppointmentRequestDto = AppointmentRequestDto.builder()
-                .appointmentDate(LocalDate.of(2025, 5, 20))
-                .appointmentTime(LocalTime.of(9, 0))
-                .duration(1)
-                .patientId(patientDto.id())
-                .dentistId(1L)
-                .build();
-
+        AppointmentRequestDto secondAppointmentRequestDto = createDefaultAppointmentRequestDto(
+                patientDto.id(),
+                1L,
+                LocalDate.of(2025, 5, 20),
+                LocalTime.of(9, 0),
+                1
+        );
         AppointmentDto secondAppointmentDto = clinicCrudFacade.addAppointment(secondAppointmentRequestDto);
         Long secondAppointmentDtoId = secondAppointmentDto.id();
 
-        //when
-        AppointmentBasicUpdateDto updateSecondAppointmentDto = AppointmentBasicUpdateDto.builder()
-                .appointmentTime(LocalTime.of(12, 0))
-                .duration(2)
-                .build();
+        // when
+        AppointmentBasicUpdateDto updateSecondAppointmentDto = createAppointmentBasicUpdateDto(
+                LocalTime.of(12, 0),
+                2
+        );
         clinicCrudFacade.basicAppointmentUpdate(secondAppointmentDtoId, updateSecondAppointmentDto);
 
         //then

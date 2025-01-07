@@ -7,17 +7,19 @@ class ClinicCrudFacadeConfiguration {
             final PatientRepository patientRepository,
             final ScheduleRepository scheduleRepository,
             final DentistRepository dentistRepository,
-            final AppointmentRepository appointmentRepository
+            final AppointmentRepository appointmentRepository,
+            final AddressRepository addressRepository
     ) {
         PatientAdder patientAdder = new PatientAdder(patientRepository);
         PatientRetriever patientRetriever = new PatientRetriever(patientRepository);
         DentistRetriever dentistRetriever = new DentistRetriever(dentistRepository);
-        AppointmentRetriever appointmentRetriever = new AppointmentRetriever(appointmentRepository);
+        AppointmentRetriever appointmentRetriever = new AppointmentRetriever(appointmentRepository, scheduleRepository);
         DentistAssigner dentistAssigner = new DentistAssigner(dentistRetriever, appointmentRetriever);
         ScheduleRetriever scheduleRetriever = new ScheduleRetriever(scheduleRepository);
         ScheduleAdder scheduleAdder = new ScheduleAdder(dentistAssigner, scheduleRetriever ,scheduleRepository);
         AppointmentAdder appointmentAdder = new AppointmentAdder(appointmentRepository, scheduleRetriever, patientRepository, dentistRepository);
-        AppointmentUpdater appointmentUpdater = new AppointmentUpdater(appointmentRepository, appointmentRetriever, scheduleRepository);
+        AppointmentUpdater appointmentUpdater = new AppointmentUpdater(appointmentRepository, appointmentRetriever, scheduleRepository, patientRepository);
+        PatientDeleter patientDeleter = new PatientDeleter(patientRetriever, patientRepository, appointmentRetriever, addressRepository);
         return new ClinicCrudFacade(
                 patientAdder,
                 patientRetriever,
@@ -26,7 +28,8 @@ class ClinicCrudFacadeConfiguration {
                 appointmentAdder,
                 appointmentRetriever,
                 dentistRetriever,
-                appointmentUpdater
+                appointmentUpdater,
+                patientDeleter
         );
     }
 }

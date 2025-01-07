@@ -82,14 +82,16 @@ class AppointmentUpdater {
             appointment.setDuration(newDuration);
         }
 
-//        // Aktualizacja pacjenta
-//        if (updateDto.patientId() != null && !updateDto.patientId().equals(appointment.getPatient().getId())) {
-//            Patient patient = patientRepository.findById(updateDto.patientId())
-//                    .orElseThrow(() -> new PatientNotFoundException("Pacjent o ID " + updateDto.patientId() + " nie istnieje."));
-//            appointment.setPatient(patient);
-//        }
-
-//        // Aktualizacja dentysty
+        // Aktualizacja pacjenta
+        if (updateDto.patientId() != null && !updateDto.patientId().equals(appointment.getPatient().getId())) {
+            Patient patient = patientRepository.findById(updateDto.patientId())
+                    .orElseThrow(() -> new PatientNotFoundException("Pacjent o ID " + updateDto.patientId() + " nie istnieje."));
+            appointment.setPatient(patient);
+        }
+        /**
+            Aktualizacja dentysty
+            Wymaganie biznesowe jeden dentysta, w tej chwili fragment niepotrzebny
+        */
 //        if (updateDto.dentistId() != null && !updateDto.dentistId().equals(appointment.getDentist().getId())) {
 //            Dentist dentist = dentistRepository.findById(updateDto.dentistId())
 //                    .orElseThrow(() -> new DentistNotFoundException("Dentysta o ID " + updateDto.dentistId() + " nie istnieje."));
@@ -153,8 +155,10 @@ class AppointmentUpdater {
                 .collect(Collectors.toSet());
     }
 
+    /**
+     Usuń stare godziny z bookedHours, aby sprawdzić tylko konflikt z nowymi godzinami
+     */
     private boolean areHoursAvailable(Set<Integer> newReservedHours, Set<Integer> bookedHours, Set<Integer> oldReservedHours) {
-        // Usuń stare godziny z bookedHours, aby sprawdzić tylko konflikt z nowymi godzinami
         Set<Integer> effectiveBookedHours = new HashSet<>(bookedHours);
         effectiveBookedHours.removeAll(oldReservedHours);
         return newReservedHours.stream().noneMatch(effectiveBookedHours::contains);

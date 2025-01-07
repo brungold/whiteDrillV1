@@ -79,4 +79,8 @@ class ScheduleRetriever {
         // Mapuj TreeSet na ScheduleAvailableHoursDto
         return ScheduleMapper.mapFromTreeSetWithAvailableHoursToScheduleAvailableHoursDto(date, availableHours);
     }
+
+    public List<Schedule> findSchedulesByDentistIdOrderedByDate(Long dentistId) {
+        return scheduleRepository.findAllByDentistIdOrderByDateAsc(dentistId);
+    }
 }

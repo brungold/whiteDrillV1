@@ -4,6 +4,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.query.Param;
 
 
 import java.time.LocalDate;
@@ -32,6 +33,14 @@ interface ScheduleRepository extends Repository<Schedule, Long> {
                 WHERE a.id = :appointmentId
             """)
     void addAppointmentToSchedule (Long scheduleId, Long appointmentId);
+
+    @Query("""
+        SELECT s
+        FROM Schedule s
+        WHERE s.dentist.id = :dentistId
+        ORDER BY s.date ASC
+       """)
+    List<Schedule> findAllByDentistIdOrderByDateAsc(@Param("dentistId") Long dentistId);
 
 //    @Transactional
 //    @Modifying

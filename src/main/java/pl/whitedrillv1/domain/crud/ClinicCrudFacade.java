@@ -29,6 +29,7 @@ public class ClinicCrudFacade {
     private final AppointmentRetriever appointmentRetriever;
     private final DentistRetriever dentistRetriever;
     private final AppointmentUpdater appointmentUpdater;
+    private final PatientDeleter patientDeleter;
 
     // Patient methods
     public PatientDto addPatient(PatientRequestDto dto) {
@@ -78,6 +79,10 @@ public class ClinicCrudFacade {
     }
 
     // Patient methods
+    public void deletePatientById(Long id) {
+        patientRetriever.findPatientById(id);
+        patientDeleter.deletePatient(id);
+    }
 
     // Dentist methods
     public DentistDto findDentistDtoById(Long id) {
