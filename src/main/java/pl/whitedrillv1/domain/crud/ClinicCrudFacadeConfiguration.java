@@ -20,6 +20,8 @@ class ClinicCrudFacadeConfiguration {
         AppointmentAdder appointmentAdder = new AppointmentAdder(appointmentRepository, scheduleRetriever, patientRepository, dentistRepository);
         AppointmentUpdater appointmentUpdater = new AppointmentUpdater(appointmentRepository, appointmentRetriever, scheduleRepository, patientRepository);
         PatientDeleter patientDeleter = new PatientDeleter(patientRetriever, patientRepository, appointmentRetriever, addressRepository);
+        AddressAdder addressAdder = new AddressAdder(addressRepository, patientRetriever);
+        AddressDeleter addressDeleter = new AddressDeleter(addressRepository, patientRepository);
         return new ClinicCrudFacade(
                 patientAdder,
                 patientRetriever,
@@ -29,7 +31,9 @@ class ClinicCrudFacadeConfiguration {
                 appointmentRetriever,
                 dentistRetriever,
                 appointmentUpdater,
-                patientDeleter
+                patientDeleter,
+                addressAdder,
+                addressDeleter
         );
     }
 }

@@ -95,4 +95,19 @@ interface TestDataPatientFactory {
                         .build())
                 .build();
     }
+
+    default PatientRequestDto createDefaultPatientRequestDtoWithoutAddress() {
+        return PatientRequestDto.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .birthDate(LocalDate.of(1980, 5, 15))
+                .phone("1234567890")
+                .email("john.doe@example.com")
+                .patientGender(PatientGenderDto.MALE)
+                .pesel("80051512345")
+                .language("English")
+                .nationality("American")
+                .nip("1234567890")
+                .build();
+    }
 }

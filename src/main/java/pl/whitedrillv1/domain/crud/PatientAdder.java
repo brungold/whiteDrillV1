@@ -20,13 +20,16 @@ class PatientAdder {
         PatientGender patientGender = PatientGender.valueOf(patientRequestDto.patientGender().name());
 
         // Utworzenie encji Address na podstawie AddressDto
-        Address address = Address.builder()
-                .postalCode(patientRequestDto.addressDto().postalCode())
-                .city(patientRequestDto.addressDto().city())
-                .street(patientRequestDto.addressDto().street())
-                .houseNumber(patientRequestDto.addressDto().houseNumber())
-                .apartmentNumber(patientRequestDto.addressDto().apartmentNumber())
-                .build();
+        Address address = null;
+        if (patientRequestDto.addressDto() != null) {
+            address = Address.builder()
+                    .postalCode(patientRequestDto.addressDto().postalCode())
+                    .city(patientRequestDto.addressDto().city())
+                    .street(patientRequestDto.addressDto().street())
+                    .houseNumber(patientRequestDto.addressDto().houseNumber())
+                    .apartmentNumber(patientRequestDto.addressDto().apartmentNumber())
+                    .build();
+        }
 
         // Utworzenie encji Patient na podstawie PatientRequestDto
         Patient patient = Patient.builder()

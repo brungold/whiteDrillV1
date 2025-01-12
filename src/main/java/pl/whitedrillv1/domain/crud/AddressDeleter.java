@@ -13,12 +13,27 @@ import org.springframework.transaction.annotation.Transactional;
 class AddressDeleter {
 
     private final AddressRepository addressRepository;
-    private final AddressRetriever addressRetriever;
+    private final PatientRepository patientRepository;
 
-    void deleteAddress(Long addressId) {
-        // Usunięcie adresu z bazy danych na podstawie ID
-        addressRepository.deleteById(addressId);
+    void deleteAddress(Long patientId) {
+        // Pobierz pacjenta na podstawie ID
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new PatientNotFoundException("Pacjent o podanym ID " + patientId + " nie istnieje"));
 
-        log.info("Adres o ID {} został usunięty.", addressId);
+        // Sprawdzam, czy pacjent ma przypisany adres
+        Address address = patient.getAddress();
+        if (address == null) {
+            log.warn("Pacjent o ID {} nie ma przypisanego adresu.", patientId);
+            return; // Nie ma co usuwać
+        }
+
+        // Usuń powiązanie adresu z pacjentem
+        patient.setAddress(null);
+        patientRepository.save(patient);
+
+        // Usuń adres z bazy danych
+        addressRepository.deleteById(address.getId());
+
+        log.info("Adres o ID {} należący do pacjenta o ID {} został usunięty.", address.getId(), patientId);
     }
 }

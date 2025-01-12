@@ -3,6 +3,8 @@ package pl.whitedrillv1.domain.crud;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import pl.whitedrillv1.domain.crud.dto.AddressDto;
+import pl.whitedrillv1.domain.crud.dto.AddressRequestDto;
 import pl.whitedrillv1.domain.crud.dto.AppointmentBasicUpdateDto;
 import pl.whitedrillv1.domain.crud.dto.AppointmentDto;
 import pl.whitedrillv1.domain.crud.dto.AppointmentFirstAvailableHourDto;
@@ -31,6 +33,18 @@ public class ClinicCrudFacade {
     private final DentistRetriever dentistRetriever;
     private final AppointmentUpdater appointmentUpdater;
     private final PatientDeleter patientDeleter;
+    private final AddressAdder addressAdder;
+    private final AddressDeleter addressDeleter;
+
+
+    //Address methods
+    public AddressDto addAddressToPatient(Long patientId, AddressRequestDto addressRequestDto) {
+        return addressAdder.addAddressToPatient(patientId, addressRequestDto);
+    }
+
+    public void deleteAddressFromPatient(Long patientId) {
+        addressDeleter.deleteAddress(patientId);
+    }
 
     // Patient methods
     public PatientDto addPatient(PatientRequestDto dto) {

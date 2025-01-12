@@ -64,19 +64,19 @@ class ScheduleRetriever {
     public ScheduleAvailableHoursDto findAvailableHoursByDate(LocalDate date) {
         Schedule schedule = findScheduleByDate(date);
 
-        // Oblicz zakres godzin pracy
+        // Obliczam zakres godzin pracy
         Set<Integer> allHours = IntStream.range(schedule.getStartTime().getHour(), schedule.getEndTime().getHour())
                 .boxed()
                 .collect(Collectors.toSet());
 
-        // Oblicz wolne godziny jako różnicę
+        // Obliczam wolne godziny jako różnicę
         TreeSet<Integer> availableHours = allHours.stream()
                 .filter(hour -> !schedule.getBookedHours().contains(hour))
                 .collect(Collectors.toCollection(TreeSet::new));
 
         log.info("Available hours for schedule on {}: {}", date, availableHours);
 
-        // Mapuj TreeSet na ScheduleAvailableHoursDto
+        // Mapuje TreeSet na ScheduleAvailableHoursDto
         return ScheduleMapper.mapFromTreeSetWithAvailableHoursToScheduleAvailableHoursDto(date, availableHours);
     }
 

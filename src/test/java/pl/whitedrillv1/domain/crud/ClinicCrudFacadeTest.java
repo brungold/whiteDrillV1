@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.data.domain.Pageable;
 import pl.whitedrillv1.domain.crud.dto.AddressDto;
+import pl.whitedrillv1.domain.crud.dto.AddressRequestDto;
 import pl.whitedrillv1.domain.crud.dto.AppointmentBasicUpdateDto;
 import pl.whitedrillv1.domain.crud.dto.AppointmentDto;
 import pl.whitedrillv1.domain.crud.dto.AppointmentFirstAvailableHourDto;
@@ -24,6 +25,8 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @Log4j2
 public class ClinicCrudFacadeTest implements TestDataFactory, TestDataPatientFactory, TestDataAppointmentFactory{
@@ -538,6 +541,61 @@ public class ClinicCrudFacadeTest implements TestDataFactory, TestDataPatientFac
 //        //then
 //
 //    }
+    /* ==========================
+    Section: Address Entity Tests
+    ========================== */
+    // TC for -> addressAdder
+    @Test
+    @DisplayName("Should add address to created patient")
+    public void should_add_address_to_created_patient() {
+        //given
+        PatientRequestDto patientWithoutAddress = createDefaultPatientRequestDtoWithoutAddress();
+        PatientDto patientDto = clinicCrudFacade.addPatient(patientWithoutAddress);
+        Long patientId = patientDto.id();
 
+        AddressRequestDto addressRequestDto = AddressRequestDto.builder()
+                .postalCode("12-345")
+                .city("Warszawa")
+                .street("Marszałkowska")
+                .houseNumber("10A")
+                .apartmentNumber("15")
+                .build();
+        //when
 
+        AddressDto addressDto = clinicCrudFacade.addAddressToPatient(patientId, addressRequestDto);
+        //then
+        assertNotNull(addressDto);
+        assertEquals("12-345", addressDto.postalCode());
+        assertEquals("Warszawa", addressDto.city());
+    }
+    // TC for -> addressAdder
+    @Test
+    @DisplayName("Should delete address")
+    public void should_delete_address() {
+        // given
+        PatientRequestDto patientNo1 = createDefaultPatientRequestDtoNo1();
+        PatientRequestDto patientNo2 = createDefaultPatientRequestDtoNo2();
+
+        PatientDto patientDto1 = clinicCrudFacade.addPatient(patientNo1);
+        clinicCrudFacade.addPatient(patientNo2);
+
+        Long patientDto1Id = patientDto1.id();
+
+            // Weryfikuje, że adres początkowo istnieje
+        AddressDto initialAddress = patientDto1.address();
+        assertThat(initialAddress).isNotNull();
+        assertThat(initialAddress).isEqualTo(AddressDto.builder()
+                .postalCode("12-345")
+                .city("New York")
+                .street("Broadway")
+                .houseNumber("1")
+                .apartmentNumber("101")
+                .build());
+        //when
+        clinicCrudFacade.deleteAddressFromPatient(patientDto1Id);
+        // then
+            // Pobieram ponownie pacjenta i sprawdzam, czy adres został usunięty
+        PatientDto updatedPatient = clinicCrudFacade.findPatientDtoById(patientDto1Id);
+        assertThat(updatedPatient.address()).isNull();
+    }
 }
