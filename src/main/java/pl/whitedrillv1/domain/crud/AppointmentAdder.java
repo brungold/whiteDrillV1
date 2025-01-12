@@ -1,6 +1,7 @@
 package pl.whitedrillv1.domain.crud;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.whitedrillv1.domain.crud.Dentist;
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Set;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 @Transactional
@@ -76,6 +78,8 @@ class AppointmentAdder {
         // 7. Zapisz wizytę
         appointmentRepository.save(appointment);
 
+
+        log.info("Appointment added: " + appointment);
         return AppointmentMapper.mapFromAppointmentToAppointmentDto(appointment);
     }
     /**

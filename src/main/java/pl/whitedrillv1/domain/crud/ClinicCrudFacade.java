@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.whitedrillv1.domain.crud.dto.AppointmentBasicUpdateDto;
 import pl.whitedrillv1.domain.crud.dto.AppointmentDto;
+import pl.whitedrillv1.domain.crud.dto.AppointmentFirstAvailableHourDto;
 import pl.whitedrillv1.domain.crud.dto.AppointmentRequestDto;
 import pl.whitedrillv1.domain.crud.dto.DentistDto;
 import pl.whitedrillv1.domain.crud.dto.PatientDto;
@@ -44,6 +45,11 @@ public class ClinicCrudFacade {
         return patientRetriever.findPatientDtoById(id);
     }
 
+    public void deletePatientById(Long id) {
+        patientRetriever.findPatientById(id);
+        patientDeleter.deletePatient(id);
+    }
+
     // Schedule methods
     public ScheduleResponseDto addSchedule(ScheduleRequestDto dto) {
         return scheduleAdder.addSchedule(dto);
@@ -78,14 +84,17 @@ public class ClinicCrudFacade {
         return appointmentUpdater.updateBasicAppointmentFields(id, dto);
     }
 
-    // Patient methods
-    public void deletePatientById(Long id) {
-        patientRetriever.findPatientById(id);
-        patientDeleter.deletePatient(id);
+    public AppointmentFirstAvailableHourDto findFirstAvailableHours(Long dentistId) {
+        return appointmentRetriever.findFirstAvailableDate(dentistId);
+    }
+
+    public Set<AppointmentDto> findAllAppointmentsDto(Pageable pageable) {
+        return appointmentRetriever.findAll(pageable);
     }
 
     // Dentist methods
     public DentistDto findDentistDtoById(Long id) {
         return dentistRetriever.findDentistDtoById(id);
     }
+
 }

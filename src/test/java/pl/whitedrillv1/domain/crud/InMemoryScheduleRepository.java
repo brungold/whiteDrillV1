@@ -44,7 +44,7 @@ class InMemoryScheduleRepository implements ScheduleRepository {
 
     //TODO
     @Override
-    public List<Schedule> findAll(final Pageable pageable) {
+    public List<Schedule> findAll(Pageable pageable) {
         return db.values().stream().toList();
     }
 
@@ -66,6 +66,9 @@ class InMemoryScheduleRepository implements ScheduleRepository {
 
     @Override
     public List<Schedule> findAllByDentistIdOrderByDateAsc(final Long dentistId) {
-        return List.of();
+        return db.values().stream()
+                .filter(schedule -> schedule.getDentist().getId().equals(dentistId)) // Filtrujemy harmonogramy po ID dentysty
+                .sorted((s1, s2) -> s1.getDate().compareTo(s2.getDate())) // Sortujemy po dacie
+                .toList();
     }
 }

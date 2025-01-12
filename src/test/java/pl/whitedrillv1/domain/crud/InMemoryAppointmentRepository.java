@@ -1,11 +1,14 @@
 package pl.whitedrillv1.domain.crud;
 
 
+import org.springframework.data.domain.Pageable;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 class InMemoryAppointmentRepository implements AppointmentRepository {
 
@@ -19,8 +22,8 @@ class InMemoryAppointmentRepository implements AppointmentRepository {
     }
 
     @Override
-    public Set<Appointment> findAll() {
-        return Set.of();
+    public Set<Appointment> findAll(Pageable pageable) {
+        return db.values().stream().collect(Collectors.toSet());
     }
 
     @Override

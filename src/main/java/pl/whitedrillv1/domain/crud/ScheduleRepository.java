@@ -35,24 +35,12 @@ interface ScheduleRepository extends Repository<Schedule, Long> {
     void addAppointmentToSchedule (Long scheduleId, Long appointmentId);
 
     @Query("""
+        
+        
         SELECT s
         FROM Schedule s
         WHERE s.dentist.id = :dentistId
         ORDER BY s.date ASC
        """)
     List<Schedule> findAllByDentistIdOrderByDateAsc(@Param("dentistId") Long dentistId);
-
-//    @Transactional
-//    @Modifying
-//    @Query("""
-//    update Schedule s
-//    set s.appointments = CONCAT(s.appointments, :appointment),
-//        s.bookedHours = CONCAT(s.bookedHours, :bookedHours)
-//    where s.id = :id
-//""")
-//    int updateAppointmentsAndBookedHours(
-//            @Param("appointment") Appointment appointment,
-//            @Param("bookedHours") Set<Integer> bookedHours,
-//            @Param("id") Long id
-//    );
 }

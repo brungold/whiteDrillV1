@@ -1,6 +1,7 @@
 package pl.whitedrillv1.domain.crud;
 
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
@@ -13,7 +14,7 @@ interface AppointmentRepository extends Repository<Appointment, Long> {
 
     Optional<Appointment> findById(Long id);
 
-    Set<Appointment> findAll();
+    Set<Appointment> findAll(Pageable pageable);
 
     Appointment save(Appointment appointment);
 

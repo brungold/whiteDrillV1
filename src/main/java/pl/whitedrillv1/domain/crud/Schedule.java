@@ -91,4 +91,9 @@ class Schedule extends BaseEntity {
         workingHours.removeAll(bookedHours); // Usuń godziny już zajęte
         return workingHours; // Zwróć dostępne godziny
     }
+    public Integer getFirstAvailableHour() {
+        TreeSet<Integer> availableHours = getAvailableHours();
+        return availableHours.isEmpty() ? null : availableHours.first();
+    }
+
 }
