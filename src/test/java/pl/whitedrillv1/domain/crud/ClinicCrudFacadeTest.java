@@ -9,6 +9,7 @@ import pl.whitedrillv1.domain.crud.dto.AddressRequestDto;
 import pl.whitedrillv1.domain.crud.dto.AppointmentBasicUpdateDto;
 import pl.whitedrillv1.domain.crud.dto.AppointmentDto;
 import pl.whitedrillv1.domain.crud.dto.AppointmentFirstAvailableHourDto;
+import pl.whitedrillv1.domain.crud.dto.AppointmentFullUpdateDto;
 import pl.whitedrillv1.domain.crud.dto.AppointmentRequestDto;
 import pl.whitedrillv1.domain.crud.dto.PatientDto;
 import pl.whitedrillv1.domain.crud.dto.PatientGenderDto;
@@ -25,6 +26,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -529,6 +531,100 @@ public class ClinicCrudFacadeTest implements TestDataFactory, TestDataPatientFac
 
         //then
         assertThat(firstAvailableHours).isEqualTo(new AppointmentFirstAvailableHourDto(LocalDate.of(2025, 5,22),LocalTime.of(13, 0)));
+    }
+
+    //TC for ->
+    @Test
+    @DisplayName("Should update existing appointment")
+    public void should_update_existing_appointment() {
+        //given
+        PatientRequestDto patientNo1 = createDefaultPatientRequestDtoNo1();
+        PatientRequestDto patientNo2 = createDefaultPatientRequestDtoNo2();
+        PatientRequestDto patientNo3 = createDefaultPatientRequestDtoNo3();
+        PatientRequestDto patientNo4 = createDefaultPatientRequestDtoNo4();
+
+        ScheduleRequestDto scheduleRequestDtoNo1 = createDefaultScheduleRequestDtoNo1();
+        ScheduleRequestDto scheduleRequestDtoNo2 = createDefaultScheduleRequestDtoNo2();
+        ScheduleRequestDto scheduleRequestDtoNo3 = createDefaultScheduleRequestDtoNo3();
+
+        PatientDto patientDto1 = clinicCrudFacade.addPatient(patientNo1);
+        PatientDto patientDto2 = clinicCrudFacade.addPatient(patientNo2);
+        PatientDto patientDto3 = clinicCrudFacade.addPatient(patientNo3);
+        PatientDto patientDto4 = clinicCrudFacade.addPatient(patientNo4);
+
+        clinicCrudFacade.addSchedule(scheduleRequestDtoNo1);
+        clinicCrudFacade.addSchedule(scheduleRequestDtoNo2);
+        clinicCrudFacade.addSchedule(scheduleRequestDtoNo3);
+        ScheduleDto scheduleDto = clinicCrudFacade.findScheduleDtoByDate(scheduleRequestDtoNo1.date());
+
+
+        //Schedule (scheduleRequestDtoNo1) =  12 - 18
+        AppointmentRequestDto defaultAppointmentRequestDto1 = createDefaultAppointmentRequestDto(patientDto1.id(), 1L, scheduleRequestDtoNo1.date(), LocalTime.of(12, 0), 3);
+        clinicCrudFacade.addAppointment(defaultAppointmentRequestDto1);
+
+        AppointmentRequestDto defaultAppointmentRequestDto2 = createDefaultAppointmentRequestDto(patientDto2.id(), 1L, scheduleRequestDtoNo1.date(), LocalTime.of(15, 0), 1);
+        AppointmentDto appointmentDto = clinicCrudFacade.addAppointment(defaultAppointmentRequestDto2);
+        Long appointmentId = appointmentDto.id();
+        AppointmentRequestDto defaultAppointmentRequestDto3 = createDefaultAppointmentRequestDto(patientDto3.id(), 1L, scheduleRequestDtoNo1.date(), LocalTime.of(16, 0), 2);
+        clinicCrudFacade.addAppointment(defaultAppointmentRequestDto3);
+
+        //Schedule (scheduleRequestDtoNo2) =  11 - 19
+        AppointmentRequestDto defaultAppointmentRequestDto4 = createDefaultAppointmentRequestDto(patientDto4.id(), 1L, scheduleRequestDtoNo2.date(), LocalTime.of(11, 0), 1);
+        clinicCrudFacade.addAppointment(defaultAppointmentRequestDto4);
+        AppointmentRequestDto defaultAppointmentRequestDto5 = createDefaultAppointmentRequestDto(patientDto2.id(), 1L, scheduleRequestDtoNo2.date(), LocalTime.of(12, 0), 1);
+        clinicCrudFacade.addAppointment(defaultAppointmentRequestDto5);
+        AppointmentRequestDto defaultAppointmentRequestDto6 = createDefaultAppointmentRequestDto(patientDto1.id(), 1L, scheduleRequestDtoNo2.date(), LocalTime.of(13, 0), 3);
+        clinicCrudFacade.addAppointment(defaultAppointmentRequestDto6);
+        AppointmentRequestDto defaultAppointmentRequestDto7 = createDefaultAppointmentRequestDto(patientDto4.id(), 1L, scheduleRequestDtoNo2.date(), LocalTime.of(16, 0), 2);
+        clinicCrudFacade.addAppointment(defaultAppointmentRequestDto7);
+        AppointmentRequestDto defaultAppointmentRequestDto8 = createDefaultAppointmentRequestDto(patientDto3.id(), 1L, scheduleRequestDtoNo2.date(), LocalTime.of(18, 0), 1);
+        clinicCrudFacade.addAppointment(defaultAppointmentRequestDto8);
+        //Schedule (scheduleRequestDtoNo3) =  10 - 18
+        AppointmentRequestDto defaultAppointmentRequestDto9 = createDefaultAppointmentRequestDto(patientDto4.id(), 1L, scheduleRequestDtoNo3.date(), LocalTime.of(10, 0), 1);
+        clinicCrudFacade.addAppointment(defaultAppointmentRequestDto9);
+        AppointmentRequestDto defaultAppointmentRequestDto10 = createDefaultAppointmentRequestDto(patientDto2.id(), 1L, scheduleRequestDtoNo3.date(), LocalTime.of(11, 0), 2);
+        clinicCrudFacade.addAppointment(defaultAppointmentRequestDto10);
+
+
+
+        List<ScheduleDto> allSchedules = clinicCrudFacade.findAllSchedules(Pageable.unpaged());
+        log.info("All schedules: {}", allSchedules);
+        assertThat(allSchedules).hasSize(3);
+        Set<AppointmentDto> appointmentDtos = clinicCrudFacade.findAllAppointmentsDto(Pageable.unpaged());
+        log.info("All appointments: {}", appointmentDtos);
+        assertThat(appointmentDtos).hasSize(10);
+
+        // Próba aktualizacji na zajętą datę/godziny
+        AppointmentFullUpdateDto conflictingUpdate = AppointmentFullUpdateDto.builder()
+                .appointmentDate(LocalDate.of(2025, 5, 21)) // Zajęta data
+                .appointmentTime(LocalTime.of(12, 0)) // Zajęte godziny
+                .duration(2)
+                .patientId(patientDto2.id())
+                .build();
+
+        // Sprawdzenie rzucenia wyjątku HoursAlreadyBookedException
+        assertThatThrownBy(() -> clinicCrudFacade.updateAppointment(appointmentId, conflictingUpdate))
+                .isInstanceOf(HoursAlreadyBookedException.class)
+                .hasMessageContaining("Wybrane godziny są już zajęte w harmonogramie");
+
+        // Aktualizacja na wolny termin
+        AppointmentFullUpdateDto freeSlotUpdate = AppointmentFullUpdateDto.builder()
+                .appointmentDate(LocalDate.of(2025, 5, 22)) // Wolny termin
+                .appointmentTime(LocalTime.of(13, 0)) // Wolne godziny
+                .duration(2)
+                .patientId(patientDto2.id())
+                .build();
+
+        //when
+        AppointmentDto updatedAppointment = clinicCrudFacade.updateAppointment(appointmentId, freeSlotUpdate);
+
+        // then
+        assertThat(updatedAppointment.appointmentDate()).isEqualTo(LocalDate.of(2025, 5, 22));
+        assertThat(updatedAppointment.appointmentTime()).isEqualTo(LocalTime.of(13, 0));
+        assertThat(updatedAppointment.duration()).isEqualTo(2);
+
+        log.info("Updated appointment: {}", updatedAppointment);
+
     }
 //     TC for -> findAppointmentDtoById
 //    @Test

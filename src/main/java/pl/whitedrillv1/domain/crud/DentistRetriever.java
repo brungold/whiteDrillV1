@@ -25,9 +25,4 @@ class DentistRetriever {
                 .map(DentistMapper::mapFromDentistToDentistDto)
                 .orElseThrow(() -> new DentistNotFoundException("Dentist  with id: " + dentistId + " not found"));
     }
-
-    Dentist assignDentistOskarSchedule() {
-        return dentistRepository.findById(1L)
-                .orElseThrow(() -> new DentistNotFoundException("Dentist not found"));
-    }
 }

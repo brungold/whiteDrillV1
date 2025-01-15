@@ -8,6 +8,7 @@ import pl.whitedrillv1.domain.crud.dto.AddressRequestDto;
 import pl.whitedrillv1.domain.crud.dto.AppointmentBasicUpdateDto;
 import pl.whitedrillv1.domain.crud.dto.AppointmentDto;
 import pl.whitedrillv1.domain.crud.dto.AppointmentFirstAvailableHourDto;
+import pl.whitedrillv1.domain.crud.dto.AppointmentFullUpdateDto;
 import pl.whitedrillv1.domain.crud.dto.AppointmentRequestDto;
 import pl.whitedrillv1.domain.crud.dto.DentistDto;
 import pl.whitedrillv1.domain.crud.dto.PatientDto;
@@ -104,6 +105,10 @@ public class ClinicCrudFacade {
 
     public Set<AppointmentDto> findAllAppointmentsDto(Pageable pageable) {
         return appointmentRetriever.findAll(pageable);
+    }
+
+    public AppointmentDto updateAppointment(Long appointmentId, AppointmentFullUpdateDto dto) {
+        return appointmentUpdater.updateAppointment(appointmentId,dto);
     }
 
     // Dentist methods

@@ -5,6 +5,7 @@ import lombok.Builder;
 
 @Builder
 public record AddressDto(
+        Long id,
         @Pattern(
                 regexp = "\\d{2}-\\d{3}",
                 message = "Postal code must match the format XX-XXX"
